@@ -26,6 +26,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
 	TArray<FVector> spawnPoints;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* SpawnPoint1;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* SpawnPoint2;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* SpawnPoint3;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* SpawnPoint4;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
