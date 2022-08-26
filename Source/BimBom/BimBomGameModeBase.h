@@ -35,6 +35,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawner, meta = (AllowPrivateAccess = "true"))
 	class ANeck* GuitarNeck;
 
+	// If a button below border -> destroy the button 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawner, meta = (AllowPrivateAccess = "true"))
+	float BottomBorderCoordinate;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

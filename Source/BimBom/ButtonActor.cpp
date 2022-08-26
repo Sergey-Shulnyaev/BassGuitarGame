@@ -55,7 +55,7 @@ void AButtonActor::BeginPlay()
 
 	//set timers
 	GetWorld()->GetTimerManager().SetTimer(PlayTimer, PlayTimerDelegate, playTime, false);
-	GetWorld()->GetTimerManager().SetTimer(AutoDestroyTimer, this, &AButtonActor::CustomDestroy, endTime);
+	//GetWorld()->GetTimerManager().SetTimer(AutoDestroyTimer, this, &AButtonActor::CustomDestroy, endTime);
 }
 
 // Called every frame

@@ -9,6 +9,8 @@
 #include "Kismet/GameplayStatics.h"
 
 ABimBomGameModeBase::ABimBomGameModeBase()
+	:
+	BottomBorderCoordinate(250)
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -72,11 +74,26 @@ ANeck* ABimBomGameModeBase::GetGuitarNeckFromScene()
 void ABimBomGameModeBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	CheckLastButtons();
 }
 
 void ABimBomGameModeBase::CheckLastButtons()
 {
-
+	for (int i = 0; i < 4; i++)
+	{
+		if (QueuesOfButtons[i].Queue.Num() > 0)
+		{
+			AButtonActor *Button = QueuesOfButtons[i].Queue[0];
+			FVector locat = GuitarNeck->GetActorLocation() - Button->GetActorLocation();
+			/*UE_LOG(LogTemp, Log, TEXT("Name: %s, X:%f, Y:%f, Z:%f"), 
+				*Button->GetName(), locat.X, locat.Y, locat.Z);*/
+			if (locat.X > BottomBorderCoordinate)
+			{
+				QueuesOfButtons[i].Queue.RemoveAt(0);
+				Button->CustomDestroy();
+			}
+		}
+	}
 }
 
 void ABimBomGameModeBase::SpawnButton(int Num)
