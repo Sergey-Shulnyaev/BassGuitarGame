@@ -3,7 +3,9 @@
 
 #include "BasicPawn.h"
 #include "ButtonActor.h"
+#include "BimBomGameModeBase.h"
 #include "Camera/CameraComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABasicPawn::ABasicPawn()
@@ -32,6 +34,8 @@ ABasicPawn::ABasicPawn()
 void ABasicPawn::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GameMode = GetWorld()->GetAuthGameMode<ABimBomGameModeBase>();
 	
 }
 
@@ -84,6 +88,7 @@ void ABasicPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 void ABasicPawn::PlayString(int Num)
 {
 	// ABimBomGameModeBase::DestroyButton
-	StringPlayEvent.Broadcast(Num);
+	//StringPlayEvent.Broadcast(Num);
+	GameMode->DestroyButton(Num);
 }
 

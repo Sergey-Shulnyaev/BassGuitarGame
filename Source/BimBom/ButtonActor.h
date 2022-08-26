@@ -48,6 +48,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Play, meta = (AllowPrivateAccess = "true"))
 	float endTime;
 
+	// Таймер автоматического удаления
+	FTimerHandle AutoDestroyTimer;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

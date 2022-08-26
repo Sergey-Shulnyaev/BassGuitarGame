@@ -36,4 +36,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Strings")
 	FStringPlayEvent StringPlayEvent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "GameMode")
+	class ABimBomGameModeBase* GameMode;
 };
