@@ -55,6 +55,13 @@ protected:
 	// Таймер автоматического удаления
 	FTimerHandle AutoDestroyTimer;
 
+	// Можно ли удалить?
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Play, meta = (AllowPrivateAccess = "true"))
+	bool bCanBeDestroyed;
+
+	// Таймер для возможности игры
+	FTimerHandle PlayTimer;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -64,5 +71,9 @@ public:
 
 	// destroy with additional functionality
 	void CustomDestroy();
+
+	// get can be destroyed
+	UFUNCTION(BlueprintCallable, Category = Play)
+	bool GetCanBeDestroyed();
 
 };

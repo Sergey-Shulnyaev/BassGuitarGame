@@ -99,41 +99,59 @@ void ABimBomGameModeBase::SpawnButton(int Num)
 
 void ABimBomGameModeBase::DestroyButton(int Num)
 {
-	//UE_LOG(LogTemp, Log, TEXT("Destroy %d button"), Num);
+	AButtonActor* Button = nullptr;
+	// Проверка есть ли кнопки
 	switch (Num)
 	{
 	case(1):
 		if (ColumnOfOnes.Num() > 0)
-		{
-			AButtonActor* Button = ColumnOfOnes[0];
-			ColumnOfOnes.RemoveAt(0);
-			Button->Destroy();
-		}
+			Button = ColumnOfOnes[0];
 		break;
 	case(2):
 		if (ColumnOfTwos.Num() > 0)
-		{
-			AButtonActor* Button = ColumnOfTwos[0];
-			ColumnOfTwos.RemoveAt(0);
-			Button->Destroy();
-		}
+			Button = ColumnOfTwos[0];
 		break;
 	case(3):
 		if (ColumnOfThrees.Num() > 0)
-		{
-			AButtonActor* Button = ColumnOfThrees[0];
-			ColumnOfThrees.RemoveAt(0);
-			Button->Destroy();
-		}
+			Button = ColumnOfThrees[0];
 		break;
 	case(4):
 		if (ColumnOfFours.Num() > 0)
+			Button = ColumnOfFours[0];
+		break;
+	}
+
+	//Если кнопка найдена, то
+	if (Button)
+	{
+		//Можно ли её уничтожить
+		if (Button->GetCanBeDestroyed())
 		{
-			AButtonActor* Button = ColumnOfFours[0];
-			ColumnOfFours.RemoveAt(0);
+			//да - уничтожение
+			switch (Num)
+			{
+			case(1):
+				ColumnOfOnes.RemoveAt(0);
+				break;
+			case(2):
+				ColumnOfTwos.RemoveAt(0);
+				break;
+			case(3):
+				ColumnOfThrees.RemoveAt(0);
+				break;
+			case(4):
+				ColumnOfFours.RemoveAt(0);			
+				break;
+			}
 			Button->Destroy();
 		}
+		else
+			//нет - соси быдло
+		{
+			UE_LOG(LogTemp, Warning, TEXT("BIDLO RANO Num %d"), Num);
+		}
 	}
+	
 }
 
 

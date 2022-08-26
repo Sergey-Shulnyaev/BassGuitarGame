@@ -12,7 +12,8 @@
 // Sets default values
 AButtonActor::AButtonActor()
 	:AActor(),
-	spriteNumber(1)
+	spriteNumber(1),
+	bCanBeDestroyed(false)
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -40,9 +41,20 @@ void AButtonActor::BeginPlay()
 {
 	Super::BeginPlay();
 	startTime = GetWorld()->TimeSeconds;
-	playTime = startTime + 4;
+	playTime = 4;
 	endTime = 5;
 
+	//create timerdelegate to change bCanBeDestroyed
+	FTimerDelegate PlayTimerDelegate;
+
+	//Binding our Lambda expression
+	PlayTimerDelegate.BindLambda([&]()
+		{
+			bCanBeDestroyed = true;
+		});
+
+	//set timers
+	GetWorld()->GetTimerManager().SetTimer(PlayTimer, PlayTimerDelegate, playTime, false);
 	GetWorld()->GetTimerManager().SetTimer(AutoDestroyTimer, this, &AButtonActor::CustomDestroy, endTime);
 }
 
@@ -102,4 +114,9 @@ void AButtonActor::CustomDestroy()
 
 	UE_LOG(LogTemp, Error, TEXT("LOOSER Button with number %d autoDESTROYED"), spriteNumber);
 	Destroy();
+}
+
+bool AButtonActor::GetCanBeDestroyed()
+{
+	return bCanBeDestroyed;
 }
