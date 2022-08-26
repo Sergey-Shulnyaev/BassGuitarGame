@@ -11,13 +11,15 @@ ANeck::ANeck()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	//sprite initialising
 	neckSpriteBackground = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Sprite"));
 	SetRootComponent(neckSpriteBackground);
 	neckSpriteBackground->SetSprite(ConstructorHelpers::FObjectFinder<UPaperSprite>
 		(TEXT("PaperSprite'/Game/Sprites/SPR_Neck_base.SPR_Neck_base'")).Object);
 
 	FVector scaleVector = FVector(0.2f, 0.2f, 0.2f);
-	//initialising spawnpoint in bp editor for customization
+	//initialising spawnpoint in bp editor for customization button spawn points
 	SpawnPoint1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnPoint1"));
 	SpawnPoint1->bHiddenInGame = true;
 	SpawnPoint1->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object);
