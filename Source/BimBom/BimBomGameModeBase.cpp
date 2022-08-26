@@ -17,11 +17,22 @@ ABimBomGameModeBase::ABimBomGameModeBase()
 	DefaultPawnClass = ABasicPawn::StaticClass();
 	PlayerControllerClass = ABimBomPlayerController::StaticClass();
 
-	// инициализация спавнера
-	SpawnComponent = CreateDefaultSubobject<USpawnComponent>(TEXT("Spawn Component"));
-
+	//initializing of ANeck
 	GuitarNeck = nullptr;
 
+	//initializing of queues
+	for (int i = 1; i < 5; i++)
+	{
+		FQueueButtonActors queueStruct;
+		QueuesOfButtons.Add(queueStruct);
+	}
+
+	//initializing of timers
+	for (int i = 1; i < 5; i++)
+	{
+		FTimerHandle timer;
+		SpawnTimerArray.Add(timer);
+	}
 }
 
 void ABimBomGameModeBase::BeginPlay()
@@ -37,11 +48,14 @@ void ABimBomGameModeBase::BeginPlay()
 
 ANeck* ABimBomGameModeBase::GetGuitarNeckFromScene()
 {
+	//initializing array for possible ANeck
 	TArray<AActor*> actorsToFind;
+	//getting all actors
 	if (UWorld* World = GetWorld())
 	{
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANeck::StaticClass(), actorsToFind);
 	}
+	// finding ANeck
 	for (AActor* neckActor : actorsToFind)
 
 	{
@@ -61,97 +75,55 @@ void ABimBomGameModeBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ABimBomGameModeBase::CheckLastButtons()
+{
+
+}
+
 void ABimBomGameModeBase::SpawnButton(int Num)
 {
+	// check ANeck
 	if (!GuitarNeck)
 	{
 		UE_LOG(LogTemp, Error, TEXT("No Neck Spawn Actor"));
 		return;
 	}
+	// Spawn button via Neck
 	AButtonActor* Button = GuitarNeck->SpawnButton(Num);
-	// Создание функции с параметром для таймера
+	// Creation delegate with parameter
 	FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &ABimBomGameModeBase::SpawnButton, Num);
 
-	// Кнопки спавнятся с интервалом равным значению на них 
-	switch (Num)
-	{
-	case(1):
-		ColumnOfOnes.Add(Button);
-		GetWorld()->GetTimerManager().SetTimer(SpawnOneTimer, TimerDelegate, Num, false);
-		break;
-	case(2):
-		ColumnOfTwos.Add(Button);
-		GetWorld()->GetTimerManager().SetTimer(SpawnTwoTimer, TimerDelegate, Num, false);
-		break;
-	case(3):
-		ColumnOfThrees.Add(Button);
-		GetWorld()->GetTimerManager().SetTimer(SpawnThreeTimer, TimerDelegate, Num, false);
-		break;
-	case(4):
-		ColumnOfFours.Add(Button);
-		GetWorld()->GetTimerManager().SetTimer(SpawnFourTimer, TimerDelegate, Num, false);
-		break;
-	}
-		
-
-	
+	// Add Button in queue
+	QueuesOfButtons[Num - 1].Queue.Add(Button);
+	GetWorld()->GetTimerManager().SetTimer(SpawnTimerArray[Num-1], TimerDelegate, Num, false);
 }
 
 void ABimBomGameModeBase::DestroyButton(int Num)
 {
 	AButtonActor* Button = nullptr;
-	// Проверка есть ли кнопки
-	switch (Num)
+	// Check existence of button
+	if (QueuesOfButtons[Num - 1].Queue.Num() > 0)
+		Button = QueuesOfButtons[Num - 1].Queue[0];
+
+	// if button doesn't exist
+	if (!Button)
 	{
-	case(1):
-		if (ColumnOfOnes.Num() > 0)
-			Button = ColumnOfOnes[0];
-		break;
-	case(2):
-		if (ColumnOfTwos.Num() > 0)
-			Button = ColumnOfTwos[0];
-		break;
-	case(3):
-		if (ColumnOfThrees.Num() > 0)
-			Button = ColumnOfThrees[0];
-		break;
-	case(4):
-		if (ColumnOfFours.Num() > 0)
-			Button = ColumnOfFours[0];
-		break;
+		UE_LOG(LogTemp, Error, TEXT("NO BUTTON NUM %d"), Num);
+		return;
 	}
 
-	//Если кнопка найдена, то
-	if (Button)
+	// if button can be destroyed
+	if (Button->GetCanBeDestroyed())
 	{
-		//Можно ли её уничтожить
-		if (Button->GetCanBeDestroyed())
-		{
-			//да - уничтожение
-			switch (Num)
-			{
-			case(1):
-				ColumnOfOnes.RemoveAt(0);
-				break;
-			case(2):
-				ColumnOfTwos.RemoveAt(0);
-				break;
-			case(3):
-				ColumnOfThrees.RemoveAt(0);
-				break;
-			case(4):
-				ColumnOfFours.RemoveAt(0);			
-				break;
-			}
-			Button->Destroy();
-		}
-		else
-			//нет - соси быдло
-		{
-			UE_LOG(LogTemp, Warning, TEXT("BIDLO RANO Num %d"), Num);
-		}
+		//destroy
+		QueuesOfButtons[Num - 1].Queue.RemoveAt(0);
+		Button->Destroy();
 	}
-	
+	else
+	{
+		//negative sanctions for player
+		UE_LOG(LogTemp, Warning, TEXT("BIDLO RANO Num %d"), Num);
+	}
 }
 
 

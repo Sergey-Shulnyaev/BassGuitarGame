@@ -9,6 +9,17 @@
 /**
  * 
  */
+USTRUCT(BlueprintType)
+struct FQueueButtonActors
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Queue)
+	TArray<class AButtonActor*> Queue;
+};
+
+
 UCLASS()
 class BIMBOM_API ABimBomGameModeBase : public AGameModeBase
 {
@@ -16,46 +27,31 @@ class BIMBOM_API ABimBomGameModeBase : public AGameModeBase
 	ABimBomGameModeBase();
 	
 protected:
-	// Массив для работы с единичками
+	//Array of queues
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
-	TArray<class AButtonActor*>	ColumnOfOnes;
-	// Массив для работы с двоечками
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
-	TArray<class AButtonActor*>	ColumnOfTwos;
-	// Массив для работы с троечками
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
-	TArray<class AButtonActor*>	ColumnOfThrees;
-	// Массив для работы с четвер очками
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
-	TArray<class AButtonActor*>	ColumnOfFours;
+	TArray<FQueueButtonActors> QueuesOfButtons;
 
-	// Спавнер
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
-	class USpawnComponent* SpawnComponent;
-
-	// Гриф
+	// Neck
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawner, meta = (AllowPrivateAccess = "true"))
 	class ANeck* GuitarNeck;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// Таймер для спавна единичек
-	FTimerHandle SpawnOneTimer;
-	// Таймер для спавна двоечек
-	FTimerHandle SpawnTwoTimer;
-	// Таймер для спавна троечек
-	FTimerHandle SpawnThreeTimer;
-	// Таймер для спавна четвер очек
-	FTimerHandle SpawnFourTimer;
+	//Array of timer for spawn ButtonActor
+	TArray<FTimerHandle> SpawnTimerArray;
 	
-	// Указатель на Пешку
+	// Pointer of Pawn
 	UPROPERTY(BlueprintReadOnly, Category = "Pawn")
 	class ABasicPawn* PlayerPawn;
 
-	// Ищет ANeck на всей сцене
+	// Search for Neck via Scene
 	UFUNCTION(BlueprintCallable, Category = Spawner)
 	class ANeck* GetGuitarNeckFromScene();
+	
+	// Check last first buttons of queues and destroy them if they are out of the range
+	UFUNCTION(BlueprintCallable, Category = Spawner)
+	void CheckLastButtons();
 
 public:
 
@@ -67,4 +63,4 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Destroyer)
 	void DestroyButton(int Num);
-};
+	};
