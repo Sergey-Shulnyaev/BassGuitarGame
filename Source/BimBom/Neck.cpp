@@ -18,6 +18,13 @@ ANeck::ANeck()
 	neckSpriteBackground->SetSprite(ConstructorHelpers::FObjectFinder<UPaperSprite>
 		(TEXT("PaperSprite'/Game/Sprites/SPR_Neck_base.SPR_Neck_base'")).Object);
 
+	//play line initialisin
+	playLineSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("PlayLine"));
+	playLineSprite->SetupAttachment(RootComponent);
+	playLineSprite->SetSprite(ConstructorHelpers::FObjectFinder<UPaperSprite>
+		(TEXT("PaperSprite'/Game/Sprites/SPR_PlayLine.SPR_PlayLine'")).Object);
+	playLineSprite->SetRelativeLocation(FVector(0, 10, -200));
+
 	FVector scaleVector = FVector(0.2f, 0.2f, 0.2f);
 	//initialising spawnpoint in bp editor for customization button spawn points
 	SpawnPoint1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnPoint1"));
@@ -61,7 +68,14 @@ ANeck::ANeck()
 void ANeck::BeginPlay()
 {
 	Super::BeginPlay();
+	//setSpawnPointsOnTop();
 }
+
+//void ANeck::setSpawnPointsOnTop()
+//{
+//	FIntPoint ViewportSize = GEngine->GameViewport->Viewport->GetSizeXY();
+//	UE_LOG(LogTemp, Log, TEXT("ViewportSize = (%d, %d)"), ViewportSize.X, ViewportSize.Y);
+//}
 
 // Called every frame
 void ANeck::Tick(float DeltaTime)

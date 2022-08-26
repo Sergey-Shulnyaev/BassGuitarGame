@@ -23,9 +23,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sprite, meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* neckSpriteBackground;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
-	TArray<FVector> spawnPoints;
-
+	//spawn point with visualizing
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* SpawnPoint1;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
@@ -34,6 +32,14 @@ protected:
 	UStaticMeshComponent* SpawnPoint3;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* SpawnPoint4;
+
+	//play line
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sprite, meta = (AllowPrivateAccess = "true"))
+	class UPaperSpriteComponent* playLineSprite;
+
+	////auto set spawn points on top of screen
+	//UFUNCTION(BlueprintCallable, Category = Spawn)
+	//void setSpawnPointsOnTop();
 
 public:	
 	// Called every frame
