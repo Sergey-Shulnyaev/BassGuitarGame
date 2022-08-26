@@ -31,6 +31,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
+	// sprite number
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sprite, meta = (AllowPrivateAccess = "true"))
+	int spriteNumber;
+
 	// Компонент для визуализации
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sprite, meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* buttonSpriteVisual;
@@ -55,6 +59,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// change sprite(number on sprite)
 	void SetNumber(int Num);
+
+	// destroy with additional functionality
+	void CustomDestroy();
 
 };

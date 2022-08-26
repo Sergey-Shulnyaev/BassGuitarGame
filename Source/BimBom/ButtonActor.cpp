@@ -11,7 +11,8 @@
 
 // Sets default values
 AButtonActor::AButtonActor()
-	:AActor()
+	:AActor(),
+	spriteNumber(1)
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -40,7 +41,9 @@ void AButtonActor::BeginPlay()
 	Super::BeginPlay();
 	startTime = GetWorld()->TimeSeconds;
 	playTime = startTime + 4;
-	endTime = startTime + 5;
+	endTime = 5;
+
+	GetWorld()->GetTimerManager().SetTimer(AutoDestroyTimer, this, &AButtonActor::CustomDestroy, endTime);
 }
 
 // Called every frame
@@ -49,11 +52,14 @@ void AButtonActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	FVector WorldMoveOffset = FVector(-100.f * DeltaTime, 0.f, 0.f);
 	AddActorWorldOffset(WorldMoveOffset);
-
+	
 }
 
 void AButtonActor::SetNumber(int Num)
 {
+	// define spriteNumber
+	spriteNumber = Num;
+
 	//Определяет спрайт для данного buttonactor по цифре
 	if (Num < 1 && Num > 4)
 	{
@@ -89,4 +95,11 @@ void AButtonActor::SetNumber(int Num)
 	}
 	buttonSpriteVisual->SetSprite(ButtonSprite->Sprite);
 
+}
+
+void AButtonActor::CustomDestroy()
+{
+
+	UE_LOG(LogTemp, Error, TEXT("LOOSER Button with number %d autoDESTROYED"), spriteNumber);
+	Destroy();
 }

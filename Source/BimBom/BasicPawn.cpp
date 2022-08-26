@@ -87,8 +87,6 @@ void ABasicPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 void ABasicPawn::PlayString(int Num)
 {
-	// ABimBomGameModeBase::DestroyButton
-	//StringPlayEvent.Broadcast(Num);
 	GameMode->DestroyButton(Num);
 }
 

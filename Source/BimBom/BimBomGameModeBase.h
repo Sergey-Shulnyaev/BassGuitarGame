@@ -53,6 +53,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Pawn")
 	class ABasicPawn* PlayerPawn;
 
+	// »щет ANeck на всей сцене
 	UFUNCTION(BlueprintCallable, Category = Spawner)
 	class ANeck* GetGuitarNeckFromScene();
 

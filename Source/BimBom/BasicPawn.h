@@ -6,7 +6,6 @@
 #include "GameFramework/Pawn.h"	   
 #include "BasicPawn.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStringPlayEvent, int, Num);
 
 UCLASS()
 class BIMBOM_API ABasicPawn : public APawn
@@ -33,9 +32,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Strings")
 	void PlayString(int Num);
-
-	UPROPERTY(BlueprintAssignable, Category = "Strings")
-	FStringPlayEvent StringPlayEvent;
 
 	UPROPERTY(BlueprintReadOnly, Category = "GameMode")
 	class ABimBomGameModeBase* GameMode;

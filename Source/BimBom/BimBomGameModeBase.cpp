@@ -33,10 +33,6 @@ void ABimBomGameModeBase::BeginPlay()
 
 	for (int i = 1; i < 5; i++)
 		SpawnButton(i);
-
-	PlayerPawn = Cast<ABasicPawn>(UGameplayStatics::GetPlayerPawn(this, 0));
-
-	PlayerPawn->StringPlayEvent.AddDynamic(this, &ABimBomGameModeBase::DestroyButton);
 }
 
 ANeck* ABimBomGameModeBase::GetGuitarNeckFromScene()
@@ -76,7 +72,7 @@ void ABimBomGameModeBase::SpawnButton(int Num)
 	// Создание функции с параметром для таймера
 	FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &ABimBomGameModeBase::SpawnButton, Num);
 
-	/** Кнопки спавнятся с интервалом равным значению на них **/
+	// Кнопки спавнятся с интервалом равным значению на них 
 	switch (Num)
 	{
 	case(1):
