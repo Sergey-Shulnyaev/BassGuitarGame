@@ -4,7 +4,6 @@
 #include "BimBomGameModeBase.h"
 #include "BimBomPlayerController.h"
 #include "BasicPawn.h"
-#include "SpawnComponent.h"
 #include "ButtonActor.h"
 #include "Neck.h"
 #include "Kismet/GameplayStatics.h"
@@ -39,7 +38,7 @@ void ABimBomGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// инициализация спавнера
+	// spawner initializing
 	GuitarNeck = GetGuitarNeckFromScene();
 
 	for (int i = 1; i < 5; i++)
