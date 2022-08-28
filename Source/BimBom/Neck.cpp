@@ -8,22 +8,34 @@
 
 // Sets default values
 ANeck::ANeck()
+	:
+	zSpawnPointCoordinate(250),
+	playTime(4),
+	endTime(5),
+	defaultButtonSpeed(100)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//sprite initialising
+	//sprite initializing
 	neckSpriteBackground = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Sprite"));
 	SetRootComponent(neckSpriteBackground);
 	neckSpriteBackground->SetSprite(ConstructorHelpers::FObjectFinder<UPaperSprite>
 		(TEXT("PaperSprite'/Game/Sprites/SPR_Neck_base.SPR_Neck_base'")).Object);
 
-	//play line initialisin
+	//play line initializing
 	playLineSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("PlayLine"));
 	playLineSprite->SetupAttachment(RootComponent);
 	playLineSprite->SetSprite(ConstructorHelpers::FObjectFinder<UPaperSprite>
 		(TEXT("PaperSprite'/Game/Sprites/SPR_PlayLine.SPR_PlayLine'")).Object);
 	playLineSprite->SetRelativeLocation(FVector(0, 10, -200));
+
+	//destroy lin initializing
+	destroyLineSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("DestroyLine"));
+	destroyLineSprite->SetupAttachment(RootComponent);
+	destroyLineSprite->SetSprite(ConstructorHelpers::FObjectFinder<UPaperSprite>
+		(TEXT("PaperSprite'/Game/Sprites/SPR_DestroyLine.SPR_DestroyLine'")).Object);
+	destroyLineSprite->SetRelativeLocation(FVector(0, 10, -250));
 
 	FVector scaleVector = FVector(0.2f, 0.2f, 0.2f);
 	//initialising spawnpoint in bp editor for customization button spawn points
@@ -34,7 +46,7 @@ ANeck::ANeck()
 	SpawnPoint1->SetMaterial(0, ConstructorHelpers::FObjectFinder<UMaterial>(TEXT("Material'/Engine/EngineDebugMaterials/VertexColorViewMode_RedOnly.VertexColorViewMode_RedOnly'")).Object);
 	SpawnPoint1->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SpawnPoint1->SetupAttachment(RootComponent);
-	SpawnPoint1->SetRelativeLocation(FVector(-38, 10, 250));
+	SpawnPoint1->SetRelativeLocation(FVector(-38, 10, zSpawnPointCoordinate));
 
 	SpawnPoint2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnPoint2"));
 	SpawnPoint2->bHiddenInGame = true;
@@ -43,7 +55,7 @@ ANeck::ANeck()
 	SpawnPoint2->SetMaterial(0, ConstructorHelpers::FObjectFinder<UMaterial>(TEXT("Material'/Engine/EngineDebugMaterials/VertexColorViewMode_RedOnly.VertexColorViewMode_RedOnly'")).Object);
 	SpawnPoint2->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SpawnPoint2->SetupAttachment(RootComponent);
-	SpawnPoint2->SetRelativeLocation(FVector(-13, 10, 250));
+	SpawnPoint2->SetRelativeLocation(FVector(-13, 10, zSpawnPointCoordinate));
 
 	SpawnPoint3 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnPoint3"));
 	SpawnPoint3->bHiddenInGame = true;
@@ -52,7 +64,7 @@ ANeck::ANeck()
 	SpawnPoint3->SetMaterial(0, ConstructorHelpers::FObjectFinder<UMaterial>(TEXT("Material'/Engine/EngineDebugMaterials/VertexColorViewMode_RedOnly.VertexColorViewMode_RedOnly'")).Object);
 	SpawnPoint3->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SpawnPoint3->SetupAttachment(RootComponent);
-	SpawnPoint3->SetRelativeLocation(FVector(13, 10, 250));
+	SpawnPoint3->SetRelativeLocation(FVector(13, 10, zSpawnPointCoordinate));
 
 	SpawnPoint4 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnPoint4"));
 	SpawnPoint4->bHiddenInGame = true;
@@ -61,21 +73,16 @@ ANeck::ANeck()
 	SpawnPoint4->SetMaterial(0, ConstructorHelpers::FObjectFinder<UMaterial>(TEXT("Material'/Engine/EngineDebugMaterials/VertexColorViewMode_RedOnly.VertexColorViewMode_RedOnly'")).Object);
 	SpawnPoint4->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SpawnPoint4->SetupAttachment(RootComponent);
-	SpawnPoint4->SetRelativeLocation(FVector(38, 10, 250));
+	SpawnPoint4->SetRelativeLocation(FVector(38, 10, zSpawnPointCoordinate));
+
+	//SetSpawnPointsZCoordinate(300);
 }
 
 // Called when the game starts or when spawned
 void ANeck::BeginPlay()
 {
 	Super::BeginPlay();
-	//setSpawnPointsOnTop();
 }
-
-//void ANeck::setSpawnPointsOnTop()
-//{
-//	FIntPoint ViewportSize = GEngine->GameViewport->Viewport->GetSizeXY();
-//	UE_LOG(LogTemp, Log, TEXT("ViewportSize = (%d, %d)"), ViewportSize.X, ViewportSize.Y);
-//}
 
 // Called every frame
 void ANeck::Tick(float DeltaTime)
@@ -117,6 +124,73 @@ AButtonActor* ANeck::SpawnButton(int Num)
 	NewButtonActor->SetActorRelativeLocation(Location);
 	NewButtonActor->SetActorRotation(Rotator);
 	NewButtonActor->SetNumber(Num);
+
+	NewButtonActor->SetTimerToPlay(playTime);
+	NewButtonActor->SetSpeed(defaultButtonSpeed);
+
 	return NewButtonActor;
+}
+
+void ANeck::SetSpawnPointsZCoordinate(float z)
+{
+	zSpawnPointCoordinate = z;
+	FVector location;
+
+	//spawn points change location
+	location = SpawnPoint1->GetRelativeLocation();
+	location.Z = zSpawnPointCoordinate;
+	SpawnPoint1->SetRelativeLocation(location);
+
+	location = SpawnPoint2->GetRelativeLocation();
+	location.Z = zSpawnPointCoordinate;
+	SpawnPoint2->SetRelativeLocation(location);
+
+	location = SpawnPoint3->GetRelativeLocation();
+	location.Z = zSpawnPointCoordinate;
+	SpawnPoint3->SetRelativeLocation(location);
+
+	location = SpawnPoint4->GetRelativeLocation();
+	location.Z = zSpawnPointCoordinate;
+	SpawnPoint4->SetRelativeLocation(location);
+
+	//play line(green) change location
+	location = playLineSprite->GetRelativeLocation();
+	location.Z = zSpawnPointCoordinate - playTime * defaultButtonSpeed - 50;
+	playLineSprite->SetRelativeLocation(location);
+}
+
+float ANeck::GetDefaultButtonPlayTime()
+{
+	return playTime;
+}
+
+void ANeck::SetDefaultButtonPlayTime(float time)
+{
+	if (time > endTime && endTime - time < 0.1)
+	{
+		UE_LOG(LogTemp, Error, TEXT("BAD PLAY TIME CHANGE"));
+		return;
+	}
+	playTime = time;
+}
+
+float ANeck::GetDefaultButtonDestroyTime()
+{
+	return endTime;
+}
+
+void ANeck::SetDefaultButtonDestroyTime(float time)
+{
+	if (time < playTime)
+	{
+		UE_LOG(LogTemp, Error, TEXT("BAD DESTROY TIME CHANGE"));
+		return;
+	}
+	endTime = time;
+}
+
+float ANeck::GetBottomBorder()
+{
+	return destroyLineSprite->GetRelativeLocation().Z;
 }
 

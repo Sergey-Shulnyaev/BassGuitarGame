@@ -42,9 +42,17 @@ void ABimBomGameModeBase::BeginPlay()
 
 	// spawner initializing
 	GuitarNeck = GetGuitarNeckFromScene();
+	if (!GuitarNeck)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Neck Spawn Actor"));
+		return;
+	}
 
 	for (int i = 1; i < 5; i++)
 		SpawnButton(i);
+
+	//set bottom border by world destroy line coordinate
+	BottomBorderCoordinate = GuitarNeck->GetActorLocation().X - GuitarNeck->GetBottomBorder();
 }
 
 ANeck* ABimBomGameModeBase::GetGuitarNeckFromScene()
@@ -98,12 +106,6 @@ void ABimBomGameModeBase::CheckLastButtons()
 
 void ABimBomGameModeBase::SpawnButton(int Num)
 {
-	// check ANeck
-	if (!GuitarNeck)
-	{
-		UE_LOG(LogTemp, Error, TEXT("No Neck Spawn Actor"));
-		return;
-	}
 	// Spawn button via Neck
 	AButtonActor* Button = GuitarNeck->SpawnButton(Num);
 	// Creation delegate with parameter

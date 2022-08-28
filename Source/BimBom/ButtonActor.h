@@ -32,25 +32,23 @@ protected:
 	virtual void BeginPlay() override;
 	
 	// sprite number
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sprite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Sprite, meta = (AllowPrivateAccess = "true"))
 	int spriteNumber;
 
 	// Компонент для визуализации
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sprite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Sprite, meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* buttonSpriteVisual;
 
 	// DataTable где указаны все возможные спрайты, от 1 до 4
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sprite, meta = (AllowPrivateAccess = "true"))
 	class UDataTable* SpriteDataTable;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Play, meta = (AllowPrivateAccess = "true"))
-	float startTime;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Play, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
 	float playTime;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Play, meta = (AllowPrivateAccess = "true"))
-	float endTime;
+	// actor speed
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play)
+	float speed;
 
 	// Таймер автоматического удаления
 	FTimerHandle AutoDestroyTimer;
@@ -76,4 +74,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Play)
 	bool GetCanBeDestroyed();
 
+	//set get speed
+	UFUNCTION(BlueprintCallable, Category = Play)
+	float GetSpeed();
+	UFUNCTION(BlueprintCallable, Category = Play)
+	void SetSpeed(float velocity);
+
+	UFUNCTION(BlueprintCallable, Category = Play)
+	void SetTimerToPlay(float time);
 };

@@ -6,6 +6,7 @@
 #include "PaperSpriteComponent.h"
 #include "PaperFlipbook.h"
 #include "PaperFlipbookComponent.h"
+#include "Neck.h"
 #include "Engine/DataTable.h"
 
 
@@ -13,6 +14,7 @@
 AButtonActor::AButtonActor()
 	:AActor(),
 	spriteNumber(1),
+	speed(100.f),
 	bCanBeDestroyed(false)
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -40,9 +42,11 @@ AButtonActor::AButtonActor()
 void AButtonActor::BeginPlay()
 {
 	Super::BeginPlay();
-	startTime = GetWorld()->TimeSeconds;
-	playTime = 4;
-	endTime = 5;
+}
+
+void AButtonActor::SetTimerToPlay(float time)
+{
+	playTime = time;
 
 	//create timerdelegate to change bCanBeDestroyed
 	FTimerDelegate PlayTimerDelegate;
@@ -54,15 +58,14 @@ void AButtonActor::BeginPlay()
 		});
 
 	//set timers
-	GetWorld()->GetTimerManager().SetTimer(PlayTimer, PlayTimerDelegate, playTime, false);
-	//GetWorld()->GetTimerManager().SetTimer(AutoDestroyTimer, this, &AButtonActor::CustomDestroy, endTime);
+	GetWorld()->GetTimerManager().SetTimer(PlayTimer, PlayTimerDelegate, time, false);
 }
 
 // Called every frame
 void AButtonActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	FVector WorldMoveOffset = FVector(-100.f * DeltaTime, 0.f, 0.f);
+	FVector WorldMoveOffset = FVector(-1.f * speed * DeltaTime, 0.f, 0.f);
 	AddActorWorldOffset(WorldMoveOffset);
 	
 }
@@ -119,4 +122,14 @@ void AButtonActor::CustomDestroy()
 bool AButtonActor::GetCanBeDestroyed()
 {
 	return bCanBeDestroyed;
+}
+
+float AButtonActor::GetSpeed()
+{
+	return speed;
+}
+
+void AButtonActor::SetSpeed(float velocity)
+{
+	speed = velocity;
 }

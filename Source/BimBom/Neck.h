@@ -20,26 +20,36 @@ protected:
 	virtual void BeginPlay() override;
 
 	// Компонент для визуализации
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sprite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Sprite, meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* neckSpriteBackground;
 
-	//spawn point with visualizing
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* SpawnPoint1;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* SpawnPoint2;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* SpawnPoint3;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* SpawnPoint4;
-
 	//play line
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sprite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Sprite, meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* playLineSprite;
 
-	////auto set spawn points on top of screen
-	//UFUNCTION(BlueprintCallable, Category = Spawn)
-	//void setSpawnPointsOnTop();
+	//destroyLine
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Sprite, meta = (AllowPrivateAccess = "true"))
+	class UPaperSpriteComponent* destroyLineSprite;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	float zSpawnPointCoordinate;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	float defaultButtonSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	float playTime;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
+	float endTime;
+
+	//spawn point with visualizing
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* SpawnPoint1;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* SpawnPoint2;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* SpawnPoint3;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* SpawnPoint4;
 
 public:	
 	// Called every frame
@@ -48,7 +58,22 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Spawn)
 	class AButtonActor* SpawnButton(int Num);
 
-	
+	//delete?
+	UFUNCTION(BlueprintCallable, Category = Spawn)
+	void SetSpawnPointsZCoordinate(float z);
 
-	
+	UFUNCTION(BlueprintCallable, Category = Spawn)
+	float GetDefaultButtonPlayTime();
+
+	UFUNCTION(BlueprintCallable, Category = Spawn)
+	void SetDefaultButtonPlayTime(float time);
+
+	UFUNCTION(BlueprintCallable, Category = Spawn)
+	float GetDefaultButtonDestroyTime();
+
+	UFUNCTION(BlueprintCallable, Category = Spawn)
+	void SetDefaultButtonDestroyTime(float time);  
+
+	UFUNCTION(BlueprintCallable, Category = Spawn)
+	float GetBottomBorder();
 };
