@@ -89,7 +89,7 @@ void ANeck::Tick(float DeltaTime)
 
 }
 
-AButtonActor* ANeck::SpawnButton(int Num)
+AButtonActor* ANeck::SpawnButton(int Num, FName Sound)
 {
 	//set location by spawn point
 	FVector Location = FVector(0, 0, 0);
@@ -124,6 +124,7 @@ AButtonActor* ANeck::SpawnButton(int Num)
 	NewButtonActor->SetNumber(Num);
 
 	NewButtonActor->SetSpeed(defaultButtonSpeed);
+	NewButtonActor->SetSound(Sound);
 
 	return NewButtonActor;
 }

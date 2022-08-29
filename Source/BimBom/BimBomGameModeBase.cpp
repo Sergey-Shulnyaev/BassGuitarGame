@@ -6,14 +6,16 @@
 #include "BasicPawn.h"
 #include "ButtonActor.h"
 #include "Neck.h"
+#include "Sound/SoundBase.h"
 #include "Kismet/GameplayStatics.h"
 
 ABimBomGameModeBase::ABimBomGameModeBase()
 	:
 	BottomBorderCoordinate(250),
 	DeltaPlay(20),
-	BeatsPerMinute(120),
-	CurrentButtonIndex(0)
+	BeatsPerMinute(80),
+	CurrentButtonIndex(0),
+	bError(false)
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -38,24 +40,86 @@ ABimBomGameModeBase::ABimBomGameModeBase()
 		SpawnTimerArray.Add(timer);
 	}
 
-	//load sprites datatable
-	static ConstructorHelpers::FObjectFinder<UDataTable> ButtonSpriteDataObject(
-		TEXT("DataTable'/Game/Songs/DT_ButtonSpawn_TEST1.DT_ButtonSpawn_TEST1'"));
+	/** LOAD DATA **/
+	//load all songs datatable
+	FSongData* SongData = nullptr;
+	static ConstructorHelpers::FObjectFinder<UDataTable> SongsDataObject(
+		TEXT("DataTable'/Game/Songs/DT_Songs.DT_Songs'"));
 
-	if (ButtonSpriteDataObject.Succeeded())
+	if (SongsDataObject.Succeeded())
 	{
-		SongDataTable = ButtonSpriteDataObject.Object;
-		ButtonRowNames = SongDataTable->GetRowNames();
+		SongData = SongsDataObject.Object->FindRow<FSongData>(FName("FurTree"), FString(TEXT("Dialogue Context")), true);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("NO SONG DATATABLE"));
 	}
+
+	//load sounds datatable
+	if (SongData)
+	{
+		if (SongData->SoundsDataTable)
+		{
+			UDataTable* SoundsData = SongData->SoundsDataTable;
+
+			for (const auto SoundRowName : SoundsData->GetRowNames())
+			{
+				USoundBase* CurrentSound = SoundsData->FindRow<FSoundsData>(SoundRowName, FString(TEXT("Dialogue Context")), true)->Sound;
+				UE_LOG(LogTemp, Warning, TEXT("Loaded Sound - %s"), *SoundRowName.ToString());
+				SoundsDictionary.Add(SoundRowName, CurrentSound);
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("NO SOUNDS DATA TABLE"));
+			bError = true;
+		}
+	}
+	//load button spawn datatable
+	if (SongData)
+	{
+		if (SongData->ButtonSpawnDataTable)
+		{
+			ButtonSpawnDataTable = SongData->ButtonSpawnDataTable;
+			ButtonRowNames = ButtonSpawnDataTable->GetRowNames();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("NO BUTTON SPAWN DATATABLE"));
+			bError = true;
+		}
+	}
+	
+	
+	if (SongData)
+	{
+		// music load
+		if (SongData->Music)
+			MainSong = SongData->Music;
+		else
+			bError = true;
+		//BPM
+		if (SongData->BeatsPerMinute)
+			BeatsPerMinute = SongData->BeatsPerMinute;
+		else
+			bError = true;
+		SongDelay = 6;
+	}
+	
+
+
+
 }
 
 void ABimBomGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
+	// if has building error then dont start spawn
+	if (bError)
+		return;
+
+	//music start
+	GetWorld()->GetTimerManager().SetTimer(PlaySongTimer, this, &ABimBomGameModeBase::StartPlayingSong, SongDelay);
 
 	// spawner initializing
 	GuitarNeck = GetGuitarNeckFromScene();
@@ -105,6 +169,11 @@ ANeck* ABimBomGameModeBase::GetGuitarNeckFromScene()
 	return nullptr;
 }
 
+void ABimBomGameModeBase::StartPlayingSong()
+{
+	UGameplayStatics::PlaySound2D(this, MainSong);
+}
+
 void ABimBomGameModeBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -133,15 +202,15 @@ void ABimBomGameModeBase::CheckLastButtons()
 
 void ABimBomGameModeBase::SetSpawnTimer()
 {
-	if (!SongDataTable)
+	if (!ButtonSpawnDataTable)
 		return;
 	//getting spawn parameters
-	FButtonSpawnParameters *buttonSpawnParameters = SongDataTable->FindRow<FButtonSpawnParameters>(
+	FButtonSpawnParameters *buttonSpawnParameters = ButtonSpawnDataTable->FindRow<FButtonSpawnParameters>(
 		ButtonRowNames[CurrentButtonIndex], FString(TEXT("Dialogue Context")), true);
 	float buttonPlayTime = buttonSpawnParameters->Time;
 	float currentTime = GetWorld()->GetTimeSeconds() - StartSongTime;
 	float playTime = buttonPlayTime / BeatsPerMinute * 60 - ButtonDistance / DefaultButtonSpeed;
-	float deltaSpawnTime = playTime - currentTime;
+	float deltaSpawnTime = playTime - currentTime + SongDelay;
 
 	UE_LOG(LogTemp, Log, TEXT("Delta Spawn Time = %f"), deltaSpawnTime);
 
@@ -163,11 +232,11 @@ void ABimBomGameModeBase::SetSpawnTimer()
 
 void ABimBomGameModeBase::SpawnButton()
 {
-	FButtonSpawnParameters* buttonSpawnParameters = SongDataTable->FindRow<FButtonSpawnParameters>(
+	FButtonSpawnParameters* buttonSpawnParameters = ButtonSpawnDataTable->FindRow<FButtonSpawnParameters>(
 		ButtonRowNames[CurrentButtonIndex], FString(TEXT("Dialogue Context")), true);
 	
 	// if fret not in range
-	if (buttonSpawnParameters->Fret < 1 || buttonSpawnParameters->Fret > 4)
+	if (buttonSpawnParameters->String < 1 || buttonSpawnParameters->String > 4)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Button with index: %d fret not in range"), CurrentButtonIndex);
 		CurrentButtonIndex += 1;
@@ -175,9 +244,9 @@ void ABimBomGameModeBase::SpawnButton()
 		return;
 	}
 	// Spawn button via Neck
-	AButtonActor* Button = GuitarNeck->SpawnButton(buttonSpawnParameters->Fret);
+	AButtonActor* Button = GuitarNeck->SpawnButton(buttonSpawnParameters->String, buttonSpawnParameters->Sound);
 	// Add Button in queue
-	QueuesOfButtons[buttonSpawnParameters->Fret - 1].Queue.Add(Button);
+	QueuesOfButtons[buttonSpawnParameters->String - 1].Queue.Add(Button);
 	
 	CurrentButtonIndex += 1;
 	if (CurrentButtonIndex > ButtonRowNames.Num()-1)
@@ -191,6 +260,7 @@ void ABimBomGameModeBase::SpawnButton()
 void ABimBomGameModeBase::DestroyButton(int Num)
 {
 	AButtonActor* Button = nullptr;
+	//UGameplayStatics::PlaySound2D(this, E5);
 	// Check existence of button
 	if (QueuesOfButtons[Num - 1].Queue.Num() > 0)
 		Button = QueuesOfButtons[Num - 1].Queue[0];
@@ -208,6 +278,7 @@ void ABimBomGameModeBase::DestroyButton(int Num)
 	{
 		//destroy
 		QueuesOfButtons[Num - 1].Queue.RemoveAt(0);
+		UGameplayStatics::PlaySound2D(this, *SoundsDictionary.Find(Button->GetSound()));
 		Button->Destroy();
 	}
 	else

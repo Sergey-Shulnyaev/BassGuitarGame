@@ -51,7 +51,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category = Spawn)
-	class AButtonActor* SpawnButton(int Num);
+	class AButtonActor* SpawnButton(int Num, FName Sound);
 
 	//delete?
 	UFUNCTION(BlueprintCallable, Category = Spawn)

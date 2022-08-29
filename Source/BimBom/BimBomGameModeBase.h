@@ -30,12 +30,44 @@ public:
 	float Time;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Button)
-	int Tone;
+	FName Sound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Button)
-	int Fret;
+	int String;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Button)
+	int Speed;
 };
 
+USTRUCT(BlueprintType)
+struct FSongData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Song)
+	class UDataTable* SoundsDataTable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Song)
+	class USoundBase* Music;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Song)
+	float BeatsPerMinute;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Button)
+	class UDataTable* ButtonSpawnDataTable;
+};
+
+USTRUCT(BlueprintType)
+struct FSoundsData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
+	class USoundBase* Sound;
+
+};
 
 UCLASS()
 class BIMBOM_API ABimBomGameModeBase : public AGameModeBase
@@ -53,9 +85,9 @@ protected:
 	class ANeck* GuitarNeck;
 
 
-	// song DataTable
+	// button spawn DataTable
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
-	class UDataTable* SongDataTable;
+	class UDataTable* ButtonSpawnDataTable;
 	// row names to get propper button parameters
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
 	TArray <FName> ButtonRowNames;
@@ -80,6 +112,9 @@ protected:
 	// current button index
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
 	int CurrentButtonIndex;
+	// data load error
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
+	bool bError;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -93,7 +128,7 @@ protected:
 	FTimerHandle SpawnTimer;
 	
 	// Pointer of Scene Pawn
-	UPROPERTY(BlueprintReadOnly, Category = "Pawn")
+	UPROPERTY(BlueprintReadOnly, Category = Pawn)
 	class ABasicPawn* PlayerPawn;
 
 	// Search for Neck via Scene
@@ -104,6 +139,25 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = Spawner)
 	void CheckLastButtons();
 
+	//sounds dictionary
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sound, meta = (AllowPrivateAccess = "true"))
+	TMap<FName, USoundBase*> SoundsDictionary;
+	
+	//main song
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sound, meta = (AllowPrivateAccess = "true"))
+	USoundBase* MainSong;
+	
+	//delay for start playing song in seconds
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sound, meta = (AllowPrivateAccess = "true"))
+	float SongDelay;
+	
+	//PlaySongTimer
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
+	FTimerHandle PlaySongTimer;
+
+	// start play
+	UFUNCTION(BlueprintCallable, Category = Sound)
+	void StartPlayingSong();
 public:
 
 	// Called every frame

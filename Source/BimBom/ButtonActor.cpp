@@ -126,3 +126,13 @@ void AButtonActor::SetSpeed(float velocity)
 {
 	speed = velocity;
 }
+
+FName AButtonActor::GetSound()
+{
+	return Sound;
+}
+
+void AButtonActor::SetSound(FName NewSound)
+{
+	Sound = NewSound;
+}

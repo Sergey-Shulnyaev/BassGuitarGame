@@ -32,23 +32,27 @@ protected:
 	virtual void BeginPlay() override;
 	
 	// sprite number
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Sprite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sprite, meta = (AllowPrivateAccess = "true"))
 	int spriteNumber;
 
 	// Компонент для визуализации
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Sprite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sprite, meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* buttonSpriteVisual;
 
 	// DataTable где указаны все возможные спрайты, от 1 до 4
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Sprite, meta = (AllowPrivateAccess = "true"))
 	class UDataTable* SpriteDataTable;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Play, meta = (AllowPrivateAccess = "true"))
 	float playTime;
 
 	// actor speed
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Play)
 	float speed;
+
+	// sound
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Play)
+	FName Sound;
 
 public:	
 	// Called every frame
@@ -65,4 +69,10 @@ public:
 	float GetSpeed();
 	UFUNCTION(BlueprintCallable, Category = Play)
 	void SetSpeed(float velocity);
+
+	//set get sound
+	UFUNCTION(BlueprintCallable, Category = Play)
+	void SetSound(FName NewSound);
+	UFUNCTION(BlueprintCallable, Category = Play)
+	FName GetSound();
 };
