@@ -10,7 +10,8 @@
 
 ABimBomGameModeBase::ABimBomGameModeBase()
 	:
-	BottomBorderCoordinate(250)
+	BottomBorderCoordinate(250),
+	DeltaPlay(20)
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -34,6 +35,19 @@ ABimBomGameModeBase::ABimBomGameModeBase()
 		FTimerHandle timer;
 		SpawnTimerArray.Add(timer);
 	}
+
+	//load sprites datatable
+	static ConstructorHelpers::FObjectFinder<UDataTable> ButtonSpriteDataObject(
+		TEXT("DataTable'/Game/Songs/DT_ButtonSpawn_TEST1.DT_ButtonSpawn_TEST1'"));
+
+	if (ButtonSpriteDataObject.Succeeded())
+	{
+		SongDataTable = ButtonSpriteDataObject.Object;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("NO SONG DATATABLE"));
+	}
 }
 
 void ABimBomGameModeBase::BeginPlay()
@@ -48,11 +62,18 @@ void ABimBomGameModeBase::BeginPlay()
 		return;
 	}
 
+	// set bottom border by getting relative coordinate
+	BottomBorderCoordinate = -GuitarNeck->GetBottomBorderCoordinate();
+
+	// set play line 
+	PlayLineCoordinate = -GuitarNeck->GetPlayLineCoordinate();
+
+	// set song start time
+	StartSongTime = GetWorld()->GetTimeSeconds();
+
 	for (int i = 1; i < 5; i++)
 		SpawnButton(i);
-
-	//set bottom border by world destroy line coordinate
-	BottomBorderCoordinate = GuitarNeck->GetActorLocation().X - GuitarNeck->GetBottomBorder();
+	
 }
 
 ANeck* ABimBomGameModeBase::GetGuitarNeckFromScene()
@@ -92,6 +113,7 @@ void ABimBomGameModeBase::CheckLastButtons()
 		if (QueuesOfButtons[i].Queue.Num() > 0)
 		{
 			AButtonActor *Button = QueuesOfButtons[i].Queue[0];
+			// get button relative location
 			FVector locat = GuitarNeck->GetActorLocation() - Button->GetActorLocation();
 			/*UE_LOG(LogTemp, Log, TEXT("Name: %s, X:%f, Y:%f, Z:%f"), 
 				*Button->GetName(), locat.X, locat.Y, locat.Z);*/
@@ -106,6 +128,8 @@ void ABimBomGameModeBase::CheckLastButtons()
 
 void ABimBomGameModeBase::SpawnButton(int Num)
 {
+	float currentTime = GetWorld()->GetTimeSeconds() - StartSongTime;
+	
 	// Spawn button via Neck
 	AButtonActor* Button = GuitarNeck->SpawnButton(Num);
 	// Creation delegate with parameter
@@ -130,8 +154,9 @@ void ABimBomGameModeBase::DestroyButton(int Num)
 		return;
 	}
 
+	FVector locat = GuitarNeck->GetActorLocation() - Button->GetActorLocation();
 	// if button can be destroyed
-	if (Button->GetCanBeDestroyed())
+	if (locat.X > PlayLineCoordinate - DeltaPlay)
 	{
 		//destroy
 		QueuesOfButtons[Num - 1].Queue.RemoveAt(0);

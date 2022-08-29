@@ -36,11 +36,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
 	float defaultButtonSpeed;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawn, meta = (AllowPrivateAccess = "true"))
-	float playTime;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
-	float endTime;
-
 	//spawn point with visualizing
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawn, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* SpawnPoint1;
@@ -60,20 +55,15 @@ public:
 
 	//delete?
 	UFUNCTION(BlueprintCallable, Category = Spawn)
-	void SetSpawnPointsZCoordinate(float z);
+	void SetSpawnPointsZCoordinate(float z); 
 
 	UFUNCTION(BlueprintCallable, Category = Spawn)
-	float GetDefaultButtonPlayTime();
+	float GetBottomBorderCoordinate();
 
 	UFUNCTION(BlueprintCallable, Category = Spawn)
-	void SetDefaultButtonPlayTime(float time);
+	float GetPlayLineCoordinate();
 
+	// get distance which button should go through
 	UFUNCTION(BlueprintCallable, Category = Spawn)
-	float GetDefaultButtonDestroyTime();
-
-	UFUNCTION(BlueprintCallable, Category = Spawn)
-	void SetDefaultButtonDestroyTime(float time);  
-
-	UFUNCTION(BlueprintCallable, Category = Spawn)
-	float GetBottomBorder();
+	float GetButtonDistance();
 };

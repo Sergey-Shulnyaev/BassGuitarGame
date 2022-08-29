@@ -14,8 +14,7 @@
 AButtonActor::AButtonActor()
 	:AActor(),
 	spriteNumber(1),
-	speed(100.f),
-	bCanBeDestroyed(false)
+	speed(100.f)
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -44,22 +43,22 @@ void AButtonActor::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AButtonActor::SetTimerToPlay(float time)
-{
-	playTime = time;
-
-	//create timerdelegate to change bCanBeDestroyed
-	FTimerDelegate PlayTimerDelegate;
-
-	//Binding our Lambda expression
-	PlayTimerDelegate.BindLambda([&]()
-		{
-			bCanBeDestroyed = true;
-		});
-
-	//set timers
-	GetWorld()->GetTimerManager().SetTimer(PlayTimer, PlayTimerDelegate, time, false);
-}
+//void AButtonActor::SetTimerToPlay(float time)
+//{
+//	playTime = time;
+//
+//	//create timerdelegate to change bCanBeDestroyed
+//	FTimerDelegate PlayTimerDelegate;
+//
+//	//Binding our Lambda expression
+//	PlayTimerDelegate.BindLambda([&]()
+//		{
+//			bCanBeDestroyed = true;
+//		});
+//
+//	//set timers
+//	GetWorld()->GetTimerManager().SetTimer(PlayTimer, PlayTimerDelegate, time, false);
+//}
 
 // Called every frame
 void AButtonActor::Tick(float DeltaTime)
@@ -67,7 +66,6 @@ void AButtonActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	FVector WorldMoveOffset = FVector(-1.f * speed * DeltaTime, 0.f, 0.f);
 	AddActorWorldOffset(WorldMoveOffset);
-	
 }
 
 void AButtonActor::SetNumber(int Num)
@@ -117,11 +115,6 @@ void AButtonActor::CustomDestroy()
 
 	UE_LOG(LogTemp, Error, TEXT("LOOSER Button with number %d autoDESTROYED"), spriteNumber);
 	Destroy();
-}
-
-bool AButtonActor::GetCanBeDestroyed()
-{
-	return bCanBeDestroyed;
 }
 
 float AButtonActor::GetSpeed()

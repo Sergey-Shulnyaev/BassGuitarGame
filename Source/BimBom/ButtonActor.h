@@ -50,16 +50,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play)
 	float speed;
 
-	// Таймер автоматического удаления
-	FTimerHandle AutoDestroyTimer;
-
-	// Можно ли удалить?
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Play, meta = (AllowPrivateAccess = "true"))
-	bool bCanBeDestroyed;
-
-	// Таймер для возможности игры
-	FTimerHandle PlayTimer;
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -70,16 +60,9 @@ public:
 	// destroy with additional functionality
 	void CustomDestroy();
 
-	// get can be destroyed
-	UFUNCTION(BlueprintCallable, Category = Play)
-	bool GetCanBeDestroyed();
-
 	//set get speed
 	UFUNCTION(BlueprintCallable, Category = Play)
 	float GetSpeed();
 	UFUNCTION(BlueprintCallable, Category = Play)
 	void SetSpeed(float velocity);
-
-	UFUNCTION(BlueprintCallable, Category = Play)
-	void SetTimerToPlay(float time);
 };

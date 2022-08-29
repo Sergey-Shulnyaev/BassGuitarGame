@@ -10,8 +10,6 @@
 ANeck::ANeck()
 	:
 	zSpawnPointCoordinate(250),
-	playTime(4),
-	endTime(5),
 	defaultButtonSpeed(100)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -125,7 +123,6 @@ AButtonActor* ANeck::SpawnButton(int Num)
 	NewButtonActor->SetActorRotation(Rotator);
 	NewButtonActor->SetNumber(Num);
 
-	NewButtonActor->SetTimerToPlay(playTime);
 	NewButtonActor->SetSpeed(defaultButtonSpeed);
 
 	return NewButtonActor;
@@ -152,45 +149,20 @@ void ANeck::SetSpawnPointsZCoordinate(float z)
 	location = SpawnPoint4->GetRelativeLocation();
 	location.Z = zSpawnPointCoordinate;
 	SpawnPoint4->SetRelativeLocation(location);
-
-	//play line(green) change location
-	location = playLineSprite->GetRelativeLocation();
-	location.Z = zSpawnPointCoordinate - playTime * defaultButtonSpeed - 50;
-	playLineSprite->SetRelativeLocation(location);
 }
 
-float ANeck::GetDefaultButtonPlayTime()
-{
-	return playTime;
-}
-
-void ANeck::SetDefaultButtonPlayTime(float time)
-{
-	if (time > endTime && endTime - time < 0.1)
-	{
-		UE_LOG(LogTemp, Error, TEXT("BAD PLAY TIME CHANGE"));
-		return;
-	}
-	playTime = time;
-}
-
-float ANeck::GetDefaultButtonDestroyTime()
-{
-	return endTime;
-}
-
-void ANeck::SetDefaultButtonDestroyTime(float time)
-{
-	if (time < playTime)
-	{
-		UE_LOG(LogTemp, Error, TEXT("BAD DESTROY TIME CHANGE"));
-		return;
-	}
-	endTime = time;
-}
-
-float ANeck::GetBottomBorder()
+float ANeck::GetBottomBorderCoordinate()
 {
 	return destroyLineSprite->GetRelativeLocation().Z;
+}
+
+float ANeck::GetPlayLineCoordinate()
+{
+	return playLineSprite->GetRelativeLocation().Z;
+}
+
+float ANeck::GetButtonDistance()
+{
+	return zSpawnPointCoordinate - GetBottomBorderCoordinate();
 }
 

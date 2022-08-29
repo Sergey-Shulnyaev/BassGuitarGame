@@ -52,9 +52,29 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawner, meta = (AllowPrivateAccess = "true"))
 	class ANeck* GuitarNeck;
 
+	// BPM
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
+	float BeatsPerMinute;
+
+	// song DataTable
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
+	class UDataTable* SongDataTable;
+
+	// song start time
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
+	float StartSongTime;
+
 	// If a button below border -> destroy the button 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
 	float BottomBorderCoordinate;
+
+	// If a button below play line - delta play -> can be played
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
+	float PlayLineCoordinate;
+
+	// distance which button pass to play
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
+	float ButtonDistance;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -78,6 +98,10 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	// If a button below border -> destroy the button 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawner, meta = (AllowPrivateAccess = "true"))
+	float DeltaPlay;
 
 	UFUNCTION(BlueprintCallable, Category = Spawner)
 	void SpawnButton(int Num);
