@@ -11,7 +11,9 @@
 ABimBomGameModeBase::ABimBomGameModeBase()
 	:
 	BottomBorderCoordinate(250),
-	DeltaPlay(20)
+	DeltaPlay(20),
+	BeatsPerMinute(120),
+	CurrentButtonIndex(0)
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -43,6 +45,7 @@ ABimBomGameModeBase::ABimBomGameModeBase()
 	if (ButtonSpriteDataObject.Succeeded())
 	{
 		SongDataTable = ButtonSpriteDataObject.Object;
+		ButtonRowNames = SongDataTable->GetRowNames();
 	}
 	else
 	{
@@ -67,12 +70,14 @@ void ABimBomGameModeBase::BeginPlay()
 
 	// set play line 
 	PlayLineCoordinate = -GuitarNeck->GetPlayLineCoordinate();
-
 	// set song start time
 	StartSongTime = GetWorld()->GetTimeSeconds();
+	// set default button speed
+	DefaultButtonSpeed = GuitarNeck->GetDefaultButtonSpeed();
+	// set button pass 
+	ButtonDistance = GuitarNeck->GetButtonPassDistance();
 
-	for (int i = 1; i < 5; i++)
-		SpawnButton(i);
+	SetSpawnTimer();
 	
 }
 
@@ -126,18 +131,61 @@ void ABimBomGameModeBase::CheckLastButtons()
 	}
 }
 
-void ABimBomGameModeBase::SpawnButton(int Num)
+void ABimBomGameModeBase::SetSpawnTimer()
 {
+	if (!SongDataTable)
+		return;
+	//getting spawn parameters
+	FButtonSpawnParameters *buttonSpawnParameters = SongDataTable->FindRow<FButtonSpawnParameters>(
+		ButtonRowNames[CurrentButtonIndex], FString(TEXT("Dialogue Context")), true);
+	float buttonPlayTime = buttonSpawnParameters->Time;
 	float currentTime = GetWorld()->GetTimeSeconds() - StartSongTime;
-	
-	// Spawn button via Neck
-	AButtonActor* Button = GuitarNeck->SpawnButton(Num);
-	// Creation delegate with parameter
-	FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &ABimBomGameModeBase::SpawnButton, Num);
+	float playTime = buttonPlayTime / BeatsPerMinute * 60 - ButtonDistance / DefaultButtonSpeed;
+	float deltaSpawnTime = playTime - currentTime;
 
+	UE_LOG(LogTemp, Log, TEXT("Delta Spawn Time = %f"), deltaSpawnTime);
+
+	if (deltaSpawnTime < 0.05f)
+	// instante spawn button 
+	{
+		SpawnButton();
+		if (deltaSpawnTime < -0.05f)
+			UE_LOG(LogTemp, Warning, TEXT("Bad Time Spawn below zero"));
+	}
+	else
+	{
+		// Creation delegate with parameter
+		FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &ABimBomGameModeBase::SpawnButton);
+
+		GetWorld()->GetTimerManager().SetTimer(SpawnTimer, TimerDelegate, deltaSpawnTime, false);
+	}
+}
+
+void ABimBomGameModeBase::SpawnButton()
+{
+	FButtonSpawnParameters* buttonSpawnParameters = SongDataTable->FindRow<FButtonSpawnParameters>(
+		ButtonRowNames[CurrentButtonIndex], FString(TEXT("Dialogue Context")), true);
+	
+	// if fret not in range
+	if (buttonSpawnParameters->Fret < 1 || buttonSpawnParameters->Fret > 4)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Button with index: %d fret not in range"), CurrentButtonIndex);
+		CurrentButtonIndex += 1;
+		SetSpawnTimer();
+		return;
+	}
+	// Spawn button via Neck
+	AButtonActor* Button = GuitarNeck->SpawnButton(buttonSpawnParameters->Fret);
 	// Add Button in queue
-	QueuesOfButtons[Num - 1].Queue.Add(Button);
-	GetWorld()->GetTimerManager().SetTimer(SpawnTimerArray[Num-1], TimerDelegate, Num, false);
+	QueuesOfButtons[buttonSpawnParameters->Fret - 1].Queue.Add(Button);
+	
+	CurrentButtonIndex += 1;
+	if (CurrentButtonIndex > ButtonRowNames.Num()-1)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Song ended"));
+		return;
+	}
+	SetSpawnTimer();
 }
 
 void ABimBomGameModeBase::DestroyButton(int Num)

@@ -63,7 +63,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Spawn)
 	float GetPlayLineCoordinate();
 
+	UFUNCTION(BlueprintCallable, Category = Spawn)
+	float GetDefaultButtonSpeed();
+
 	// get distance which button should go through
 	UFUNCTION(BlueprintCallable, Category = Spawn)
-	float GetButtonDistance();
+	float GetButtonPassDistance();
 };

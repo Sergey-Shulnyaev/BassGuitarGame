@@ -73,7 +73,7 @@ ANeck::ANeck()
 	SpawnPoint4->SetupAttachment(RootComponent);
 	SpawnPoint4->SetRelativeLocation(FVector(38, 10, zSpawnPointCoordinate));
 
-	//SetSpawnPointsZCoordinate(300);
+	SetSpawnPointsZCoordinate(600);
 }
 
 // Called when the game starts or when spawned
@@ -161,8 +161,13 @@ float ANeck::GetPlayLineCoordinate()
 	return playLineSprite->GetRelativeLocation().Z;
 }
 
-float ANeck::GetButtonDistance()
+float ANeck::GetDefaultButtonSpeed()
 {
-	return zSpawnPointCoordinate - GetBottomBorderCoordinate();
+	return defaultButtonSpeed;
+}
+
+float ANeck::GetButtonPassDistance()
+{
+	return zSpawnPointCoordinate - GetPlayLineCoordinate();
 }
 
