@@ -46,6 +46,17 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawn, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* SpawnPoint4;
 
+	//string init
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
+	class UStringPaperFlipbookComponent* GuitarString1;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
+	class UStringPaperFlipbookComponent* GuitarString2;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
+	class UStringPaperFlipbookComponent* GuitarString3;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
+	class UStringPaperFlipbookComponent* GuitarString4;
+
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -69,4 +80,7 @@ public:
 	// get distance which button should go through
 	UFUNCTION(BlueprintCallable, Category = Spawn)
 	float GetButtonPassDistance();
+
+	UFUNCTION(BlueprintCallable, Category = Spawn)
+	void PlayString(int Num);
 };

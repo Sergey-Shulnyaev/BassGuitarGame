@@ -258,7 +258,9 @@ void ABimBomGameModeBase::SpawnButton()
 void ABimBomGameModeBase::DestroyButton(int Num)
 {
 	AButtonActor* Button = nullptr;
-	//UGameplayStatics::PlaySound2D(this, E5);
+	
+	GuitarNeck->PlayString(Num);
+
 	// Check existence of button
 	if (QueuesOfButtons[Num - 1].Queue.Num() > 0)
 		Button = QueuesOfButtons[Num - 1].Queue[0];

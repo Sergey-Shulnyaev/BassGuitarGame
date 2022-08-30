@@ -5,6 +5,8 @@
 #include "ButtonActor.h"
 #include "PaperSprite.h"
 #include "PaperSpriteComponent.h"
+#include "Components/StringPaperFlipbookComponent.h"
+
 
 // Sets default values
 ANeck::ANeck()
@@ -36,6 +38,7 @@ ANeck::ANeck()
 	destroyLineSprite->SetRelativeLocation(FVector(0, 10, -250));
 
 	FVector scaleVector = FVector(0.2f, 0.2f, 0.2f);
+	TArray <float> XArray = { -38, -13, 13, 38 };
 	//initialising spawnpoint in bp editor for customization button spawn points
 	SpawnPoint1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnPoint1"));
 	SpawnPoint1->bHiddenInGame = true;
@@ -44,7 +47,7 @@ ANeck::ANeck()
 	SpawnPoint1->SetMaterial(0, ConstructorHelpers::FObjectFinder<UMaterial>(TEXT("Material'/Engine/EngineDebugMaterials/VertexColorViewMode_RedOnly.VertexColorViewMode_RedOnly'")).Object);
 	SpawnPoint1->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SpawnPoint1->SetupAttachment(RootComponent);
-	SpawnPoint1->SetRelativeLocation(FVector(-38, 10, zSpawnPointCoordinate));
+	SpawnPoint1->SetRelativeLocation(FVector(XArray[0], 50, zSpawnPointCoordinate));
 
 	SpawnPoint2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnPoint2"));
 	SpawnPoint2->bHiddenInGame = true;
@@ -53,7 +56,7 @@ ANeck::ANeck()
 	SpawnPoint2->SetMaterial(0, ConstructorHelpers::FObjectFinder<UMaterial>(TEXT("Material'/Engine/EngineDebugMaterials/VertexColorViewMode_RedOnly.VertexColorViewMode_RedOnly'")).Object);
 	SpawnPoint2->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SpawnPoint2->SetupAttachment(RootComponent);
-	SpawnPoint2->SetRelativeLocation(FVector(-13, 10, zSpawnPointCoordinate));
+	SpawnPoint2->SetRelativeLocation(FVector(XArray[1], 50, zSpawnPointCoordinate));
 
 	SpawnPoint3 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnPoint3"));
 	SpawnPoint3->bHiddenInGame = true;
@@ -62,7 +65,7 @@ ANeck::ANeck()
 	SpawnPoint3->SetMaterial(0, ConstructorHelpers::FObjectFinder<UMaterial>(TEXT("Material'/Engine/EngineDebugMaterials/VertexColorViewMode_RedOnly.VertexColorViewMode_RedOnly'")).Object);
 	SpawnPoint3->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SpawnPoint3->SetupAttachment(RootComponent);
-	SpawnPoint3->SetRelativeLocation(FVector(13, 10, zSpawnPointCoordinate));
+	SpawnPoint3->SetRelativeLocation(FVector(XArray[2], 50, zSpawnPointCoordinate));
 
 	SpawnPoint4 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnPoint4"));
 	SpawnPoint4->bHiddenInGame = true;
@@ -71,9 +74,33 @@ ANeck::ANeck()
 	SpawnPoint4->SetMaterial(0, ConstructorHelpers::FObjectFinder<UMaterial>(TEXT("Material'/Engine/EngineDebugMaterials/VertexColorViewMode_RedOnly.VertexColorViewMode_RedOnly'")).Object);
 	SpawnPoint4->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SpawnPoint4->SetupAttachment(RootComponent);
-	SpawnPoint4->SetRelativeLocation(FVector(38, 10, zSpawnPointCoordinate));
+	SpawnPoint4->SetRelativeLocation(FVector(XArray[3], 50, zSpawnPointCoordinate));
 
 	SetSpawnPointsZCoordinate(600);
+
+	
+
+	GuitarString1 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String1"));
+	GuitarString1->SetupAttachment(RootComponent);
+	GuitarString1->SetRelativeLocation(FVector(XArray[0], 20, 0));
+	GuitarString1->SetRelativeScale3D(FVector(0.3, 1, 1));
+
+	GuitarString2 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String2"));
+	GuitarString2->SetupAttachment(RootComponent);
+	GuitarString2->SetRelativeLocation(FVector(XArray[1], 20, 0));
+	GuitarString2->SetRelativeScale3D(FVector(0.3, 1, 1));
+
+	GuitarString3 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String3"));
+	GuitarString3->SetupAttachment(RootComponent);
+	GuitarString3->SetRelativeLocation(FVector(XArray[2], 20, 0));
+	GuitarString3->SetRelativeScale3D(FVector(0.3, 1, 1));
+
+	GuitarString4 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String4"));
+	GuitarString4->SetupAttachment(RootComponent);
+	GuitarString4->SetRelativeLocation(FVector(XArray[3], 20, 0));
+	GuitarString4->SetRelativeScale3D(FVector(0.3, 1, 1));
+
+
 }
 
 // Called when the game starts or when spawned
@@ -171,4 +198,24 @@ float ANeck::GetButtonPassDistance()
 {
 	return zSpawnPointCoordinate - GetPlayLineCoordinate();
 }
+
+void ANeck::PlayString(int Num)
+{
+	switch (Num)
+	{
+	case(1):
+		GuitarString1->PlayString();
+		break;
+	case(2):
+		GuitarString2->PlayString();
+		break;
+	case(3):
+		GuitarString3->PlayString();
+		break;
+	case(4):
+		GuitarString4->PlayString();
+		break;
+	}
+}
+
 
