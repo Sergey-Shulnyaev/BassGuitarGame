@@ -64,8 +64,8 @@ ABimBomGameModeBase::ABimBomGameModeBase()
 
 			for (const auto SoundRowName : SoundsData->GetRowNames())
 			{
-				USoundBase* CurrentSound = SoundsData->FindRow<FSoundsData>(SoundRowName, FString(TEXT("Dialogue Context")), true)->Sound;
-				UE_LOG(LogTemp, Warning, TEXT("Loaded Sound - %s"), *SoundRowName.ToString());
+				USoundBase* CurrentSound = SoundsData->FindRow<FSoundsData>(
+					SoundRowName, FString(TEXT("Dialogue Context")), true)->Sound;
 				SoundsDictionary.Add(SoundRowName, CurrentSound);
 			}
 		}
@@ -211,8 +211,6 @@ void ABimBomGameModeBase::SetSpawnTimer()
 	float currentTime = GetWorld()->GetTimeSeconds() - StartSongTime;
 	float playTime = buttonPlayTime / BeatsPerMinute * 60 - ButtonDistance / DefaultButtonSpeed;
 	float deltaSpawnTime = playTime - currentTime + SongDelay;
-
-	UE_LOG(LogTemp, Log, TEXT("Delta Spawn Time = %f"), deltaSpawnTime);
 
 	if (deltaSpawnTime < 0.05f)
 	// instante spawn button 
