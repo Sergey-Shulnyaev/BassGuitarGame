@@ -126,6 +126,10 @@ protected:
 	//SpawnTimer
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
 	FTimerHandle SpawnTimer;
+
+	//SpawnBackgroundTimer
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
+	FTimerHandle SpawnBackgroundTimer;
 	
 	// Pointer of Scene Pawn
 	UPROPERTY(BlueprintReadOnly, Category = Pawn)
@@ -158,6 +162,12 @@ protected:
 	// start play
 	UFUNCTION(BlueprintCallable, Category = Sound)
 	void StartPlayingSong();
+
+	UFUNCTION(BlueprintCallable, Category = Spawner)
+	void SetSpawnButtonTimer();
+
+	UFUNCTION(BlueprintCallable, Category = Spawner)
+	void SetSpawnBackgroundTimer();
 public:
 
 	// Called every frame
@@ -166,12 +176,12 @@ public:
 	// If a button below border -> destroy the button 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawner, meta = (AllowPrivateAccess = "true"))
 	float DeltaPlay;
-	
-	UFUNCTION(BlueprintCallable, Category = Spawner)
-	void SetSpawnTimer();
 
 	UFUNCTION(BlueprintCallable, Category = Spawner)
 	void SpawnButton();
+
+	UFUNCTION(BlueprintCallable, Category = Spawner)
+	void SpawnBackground();
 
 	UFUNCTION(BlueprintCallable, Category = Destroyer)
 	void DestroyButton(int Num);

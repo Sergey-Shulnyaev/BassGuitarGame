@@ -5,6 +5,7 @@
 #include "ButtonActor.h"
 #include "PaperSprite.h"
 #include "PaperSpriteComponent.h"
+#include "Actors/NeckBackground.h"
 #include "Components/StringPaperFlipbookComponent.h"
 
 
@@ -14,28 +15,37 @@ ANeck::ANeck()
 	zSpawnPointCoordinate(250),
 	defaultButtonSpeed(100)
 {
+
+	float zCenter = 1024;
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//root init
+	myRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	SetRootComponent(myRootComponent);
+
 	//sprite initializing
 	neckSpriteBackground = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Sprite"));
-	SetRootComponent(neckSpriteBackground);
-	neckSpriteBackground->SetSprite(ConstructorHelpers::FObjectFinder<UPaperSprite>
-		(TEXT("PaperSprite'/Game/Sprites/SPR_Neck_base.SPR_Neck_base'")).Object);
+	neckSpriteBackground->SetupAttachment(RootComponent);
+	UPaperSprite* background = ConstructorHelpers::FObjectFinder<UPaperSprite>
+		(TEXT("PaperSprite'/Game/Sprites/SPR_Neck_base.SPR_Neck_base'")).Object;
+	neckSpriteBackground->SetSprite(background);
+	
+	neckSpriteBackground->SetRelativeLocation(FVector(0, 0, zCenter));
 
 	//play line initializing
 	playLineSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("PlayLine"));
 	playLineSprite->SetupAttachment(RootComponent);
 	playLineSprite->SetSprite(ConstructorHelpers::FObjectFinder<UPaperSprite>
 		(TEXT("PaperSprite'/Game/Sprites/SPR_PlayLine.SPR_PlayLine'")).Object);
-	playLineSprite->SetRelativeLocation(FVector(0, 10, -200));
+	playLineSprite->SetRelativeLocation(FVector(0, 10, 0));
 
 	//destroy lin initializing
 	destroyLineSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("DestroyLine"));
 	destroyLineSprite->SetupAttachment(RootComponent);
 	destroyLineSprite->SetSprite(ConstructorHelpers::FObjectFinder<UPaperSprite>
 		(TEXT("PaperSprite'/Game/Sprites/SPR_DestroyLine.SPR_DestroyLine'")).Object);
-	destroyLineSprite->SetRelativeLocation(FVector(0, 10, -250));
+	destroyLineSprite->SetRelativeLocation(FVector(0, 10, -20));
 
 	FVector scaleVector = FVector(0.2f, 0.2f, 0.2f);
 	TArray <float> XArray = { -38, -13, 13, 38 };
@@ -76,29 +86,45 @@ ANeck::ANeck()
 	SpawnPoint4->SetupAttachment(RootComponent);
 	SpawnPoint4->SetRelativeLocation(FVector(XArray[3], 50, zSpawnPointCoordinate));
 
-	SetSpawnPointsZCoordinate(600);
+	SetSpawnPointsZCoordinate(1024);
 
+	//
+
+	GuitarString1_1 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String1_1"));
+	GuitarString1_1->SetupAttachment(RootComponent);
+	GuitarString1_1->SetRelativeLocation(FVector(XArray[0], 20, 512));
 	
+	GuitarString2_1 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String2_1"));
+	GuitarString2_1->SetupAttachment(RootComponent);
+	GuitarString2_1->SetRelativeLocation(FVector(XArray[1], 20, 512));
 
-	GuitarString1 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String1"));
-	GuitarString1->SetupAttachment(RootComponent);
-	GuitarString1->SetRelativeLocation(FVector(XArray[0], 20, 0));
-	GuitarString1->SetRelativeScale3D(FVector(0.3, 1, 1));
+	GuitarString3_1 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String3_1"));
+	GuitarString3_1->SetupAttachment(RootComponent);
+	GuitarString3_1->SetRelativeLocation(FVector(XArray[2], 20, 512));
 
-	GuitarString2 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String2"));
-	GuitarString2->SetupAttachment(RootComponent);
-	GuitarString2->SetRelativeLocation(FVector(XArray[1], 20, 0));
-	GuitarString2->SetRelativeScale3D(FVector(0.3, 1, 1));
+	GuitarString4_1 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String4_1"));
+	GuitarString4_1->SetupAttachment(RootComponent);
+	GuitarString4_1->SetRelativeLocation(FVector(XArray[3], 20, 512));
 
-	GuitarString3 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String3"));
-	GuitarString3->SetupAttachment(RootComponent);
-	GuitarString3->SetRelativeLocation(FVector(XArray[2], 20, 0));
-	GuitarString3->SetRelativeScale3D(FVector(0.3, 1, 1));
+	/*GuitarString1_2 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String1_2"));
+	GuitarString1_2->SetupAttachment(RootComponent);
+	GuitarString1_2->SetRelativeLocation(FVector(XArray[0], 20, 512));
+	GuitarString1_2->SetRelativeScale3D(FVector(-1, 1, 1));
+	
+	GuitarString2_2 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String2_2"));
+	GuitarString2_2->SetupAttachment(RootComponent);
+	GuitarString2_2->SetRelativeLocation(FVector(XArray[1], 20, 512));
+	GuitarString2_2->SetRelativeScale3D(FVector(-1, 1, 1));
 
-	GuitarString4 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String4"));
-	GuitarString4->SetupAttachment(RootComponent);
-	GuitarString4->SetRelativeLocation(FVector(XArray[3], 20, 0));
-	GuitarString4->SetRelativeScale3D(FVector(0.3, 1, 1));
+	GuitarString3_2 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String3_2"));
+	GuitarString3_2->SetupAttachment(RootComponent);
+	GuitarString3_2->SetRelativeLocation(FVector(XArray[2], 20, 512));
+	GuitarString3_2->SetRelativeScale3D(FVector(-1, 1, 1));
+	
+	GuitarString4_2 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String4_2"));
+	GuitarString4_2->SetupAttachment(RootComponent);
+	GuitarString4_2->SetRelativeLocation(FVector(XArray[3], 20, 512));
+	GuitarString4_2->SetRelativeScale3D(FVector(-1, 1, 1));*/
 
 
 }
@@ -156,6 +182,28 @@ AButtonActor* ANeck::SpawnButton(int Num, FName Sound)
 	return NewButtonActor;
 }
 
+void ANeck::SpawnBackground()
+{
+	//set location by spawn point
+	FVector Location = FVector(0, 10, 0);
+	Location.Z = SpawnPoint1->GetRelativeLocation().Z;
+
+	FRotator Rotator = FRotator(0, 90.f, -90.f);
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	ANeckBackground* back = GetWorld()->SpawnActor<ANeckBackground>(Location, Rotator, SpawnParameters);
+
+	//setup relative attachment
+	FAttachmentTransformRules buttonAttacnmentTransformRule = FAttachmentTransformRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, true);
+	back->AttachToActor(this, buttonAttacnmentTransformRule);
+
+	back->SetActorRelativeLocation(Location);
+	back->SetActorRotation(Rotator);
+	back->SetSpeed(defaultButtonSpeed);
+
+	GetWorld()->GetTimerManager().SetTimer(BackSpawnTimer, this, &ANeck::SpawnBackground, 100 / defaultButtonSpeed / 2);
+}
+
 void ANeck::SetSpawnPointsZCoordinate(float z)
 {
 	zSpawnPointCoordinate = z;
@@ -204,16 +252,20 @@ void ANeck::PlayString(int Num)
 	switch (Num)
 	{
 	case(1):
-		GuitarString1->PlayString();
+		GuitarString1_1->PlayString();
+		//GuitarString1_2->PlayString();
 		break;
 	case(2):
-		GuitarString2->PlayString();
+		GuitarString2_1->PlayString();
+		//GuitarString2_2->PlayString();
 		break;
 	case(3):
-		GuitarString3->PlayString();
+		GuitarString3_1->PlayString();
+		//GuitarString3_2->PlayString();
 		break;
 	case(4):
-		GuitarString4->PlayString();
+		GuitarString4_1->PlayString();
+		//GuitarString4_2->PlayString();
 		break;
 	}
 }

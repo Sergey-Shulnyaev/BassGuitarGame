@@ -19,6 +19,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	//Root component
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Sprite, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* myRootComponent;
+
 	// Компонент для визуализации
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Sprite, meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* neckSpriteBackground;
@@ -48,13 +52,26 @@ protected:
 
 	//string init
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
-	class UStringPaperFlipbookComponent* GuitarString1;
+	class UStringPaperFlipbookComponent* GuitarString1_1;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
-	class UStringPaperFlipbookComponent* GuitarString2;
+	class UStringPaperFlipbookComponent* GuitarString2_1;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
-	class UStringPaperFlipbookComponent* GuitarString3;
+	class UStringPaperFlipbookComponent* GuitarString3_1;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
-	class UStringPaperFlipbookComponent* GuitarString4;
+	class UStringPaperFlipbookComponent* GuitarString4_1;
+
+	//SpawnTimer
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
+	FTimerHandle BackSpawnTimer;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
+	//class UStringPaperFlipbookComponent* GuitarString1_2;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
+	//class UStringPaperFlipbookComponent* GuitarString2_2;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
+	//class UStringPaperFlipbookComponent* GuitarString3_2;	
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
+	//class UStringPaperFlipbookComponent* GuitarString4_2;
 
 
 public:	
@@ -63,6 +80,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Spawn)
 	class AButtonActor* SpawnButton(int Num, FName Sound);
+
+	UFUNCTION(BlueprintCallable, Category = Spawn)
+	void SpawnBackground();
 
 	//delete?
 	UFUNCTION(BlueprintCallable, Category = Spawn)
