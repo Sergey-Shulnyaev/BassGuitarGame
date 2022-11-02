@@ -13,7 +13,7 @@
 ANeck::ANeck()
 	:
 	zSpawnPointCoordinate(250),
-	defaultButtonSpeed(100)
+	defaultButtonSpeed(150)
 {
 
 	float zCenter = 1024;
@@ -47,86 +47,47 @@ ANeck::ANeck()
 		(TEXT("PaperSprite'/Game/Sprites/SPR_DestroyLine.SPR_DestroyLine'")).Object);
 	destroyLineSprite->SetRelativeLocation(FVector(0, 10, -20));
 
-	FVector scaleVector = FVector(0.2f, 0.2f, 0.2f);
-	TArray <float> XArray = { -38, -13, 13, 38 };
-	//initialising spawnpoint in bp editor for customization button spawn points
-	SpawnPoint1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnPoint1"));
-	SpawnPoint1->bHiddenInGame = true;
-	SpawnPoint1->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object);
-	SpawnPoint1->SetWorldScale3D(scaleVector);
-	SpawnPoint1->SetMaterial(0, ConstructorHelpers::FObjectFinder<UMaterial>(TEXT("Material'/Engine/EngineDebugMaterials/VertexColorViewMode_RedOnly.VertexColorViewMode_RedOnly'")).Object);
-	SpawnPoint1->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SpawnPoint1->SetupAttachment(RootComponent);
-	SpawnPoint1->SetRelativeLocation(FVector(XArray[0], 50, zSpawnPointCoordinate));
+	
+	TArray <float> XArray;
+	float width = 128;
+	int num = 4;
+	for (int i = 1; i <= num; i++)
+		XArray.Add(-width / 2 + i * width / (num+1));
 
-	SpawnPoint2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnPoint2"));
-	SpawnPoint2->bHiddenInGame = true;
-	SpawnPoint2->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object);
-	SpawnPoint2->SetWorldScale3D(scaleVector);
-	SpawnPoint2->SetMaterial(0, ConstructorHelpers::FObjectFinder<UMaterial>(TEXT("Material'/Engine/EngineDebugMaterials/VertexColorViewMode_RedOnly.VertexColorViewMode_RedOnly'")).Object);
-	SpawnPoint2->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SpawnPoint2->SetupAttachment(RootComponent);
-	SpawnPoint2->SetRelativeLocation(FVector(XArray[1], 50, zSpawnPointCoordinate));
-
-	SpawnPoint3 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnPoint3"));
-	SpawnPoint3->bHiddenInGame = true;
-	SpawnPoint3->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object);
-	SpawnPoint3->SetWorldScale3D(scaleVector);
-	SpawnPoint3->SetMaterial(0, ConstructorHelpers::FObjectFinder<UMaterial>(TEXT("Material'/Engine/EngineDebugMaterials/VertexColorViewMode_RedOnly.VertexColorViewMode_RedOnly'")).Object);
-	SpawnPoint3->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SpawnPoint3->SetupAttachment(RootComponent);
-	SpawnPoint3->SetRelativeLocation(FVector(XArray[2], 50, zSpawnPointCoordinate));
-
-	SpawnPoint4 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnPoint4"));
-	SpawnPoint4->bHiddenInGame = true;
-	SpawnPoint4->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object);
-	SpawnPoint4->SetWorldScale3D(scaleVector);
-	SpawnPoint4->SetMaterial(0, ConstructorHelpers::FObjectFinder<UMaterial>(TEXT("Material'/Engine/EngineDebugMaterials/VertexColorViewMode_RedOnly.VertexColorViewMode_RedOnly'")).Object);
-	SpawnPoint4->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SpawnPoint4->SetupAttachment(RootComponent);
-	SpawnPoint4->SetRelativeLocation(FVector(XArray[3], 50, zSpawnPointCoordinate));
+	for (auto x : XArray)
+		CreateStringAndSpawnPoint(x);
+	
 
 	SetSpawnPointsZCoordinate(1024);
 
-	//
+}
 
-	GuitarString1_1 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String1_1"));
-	GuitarString1_1->SetupAttachment(RootComponent);
-	GuitarString1_1->SetRelativeLocation(FVector(XArray[0], 20, 512));
-	
-	GuitarString2_1 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String2_1"));
-	GuitarString2_1->SetupAttachment(RootComponent);
-	GuitarString2_1->SetRelativeLocation(FVector(XArray[1], 20, 512));
+void ANeck::CreateStringAndSpawnPoint(float x)
+{	  
+	UStringPaperFlipbookComponent* guitarString;
+	FString guitarStringName = FString("String_");
+	FString numName = FString::FromInt(GuitarStrings.Num() + 1);
+	guitarStringName = guitarStringName.Append(numName);
+	guitarString = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName(guitarStringName));
+	guitarString->SetupAttachment(RootComponent);
+	guitarString->SetRelativeLocation(FVector(x, 20, 512));
+	GuitarStrings.Add(guitarString);
 
-	GuitarString3_1 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String3_1"));
-	GuitarString3_1->SetupAttachment(RootComponent);
-	GuitarString3_1->SetRelativeLocation(FVector(XArray[2], 20, 512));
+	FVector scaleVector = FVector(0.2f, 0.2f, 0.2f);
+	UStaticMeshComponent* spawnPoint;
 
-	GuitarString4_1 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String4_1"));
-	GuitarString4_1->SetupAttachment(RootComponent);
-	GuitarString4_1->SetRelativeLocation(FVector(XArray[3], 20, 512));
+	FString spawnPointName = FString("SpawnPoint_");
+	spawnPointName = spawnPointName.Append(numName);
 
-	/*GuitarString1_2 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String1_2"));
-	GuitarString1_2->SetupAttachment(RootComponent);
-	GuitarString1_2->SetRelativeLocation(FVector(XArray[0], 20, 512));
-	GuitarString1_2->SetRelativeScale3D(FVector(-1, 1, 1));
-	
-	GuitarString2_2 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String2_2"));
-	GuitarString2_2->SetupAttachment(RootComponent);
-	GuitarString2_2->SetRelativeLocation(FVector(XArray[1], 20, 512));
-	GuitarString2_2->SetRelativeScale3D(FVector(-1, 1, 1));
-
-	GuitarString3_2 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String3_2"));
-	GuitarString3_2->SetupAttachment(RootComponent);
-	GuitarString3_2->SetRelativeLocation(FVector(XArray[2], 20, 512));
-	GuitarString3_2->SetRelativeScale3D(FVector(-1, 1, 1));
-	
-	GuitarString4_2 = CreateDefaultSubobject<UStringPaperFlipbookComponent>(FName("String4_2"));
-	GuitarString4_2->SetupAttachment(RootComponent);
-	GuitarString4_2->SetRelativeLocation(FVector(XArray[3], 20, 512));
-	GuitarString4_2->SetRelativeScale3D(FVector(-1, 1, 1));*/
-
-
+	spawnPoint = CreateDefaultSubobject<UStaticMeshComponent>(FName(spawnPointName));
+	spawnPoint->bHiddenInGame = true;
+	spawnPoint->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object);
+	spawnPoint->SetWorldScale3D(scaleVector);
+	spawnPoint->SetMaterial(0, ConstructorHelpers::FObjectFinder<UMaterial>(TEXT("Material'/Engine/EngineDebugMaterials/VertexColorViewMode_RedOnly.VertexColorViewMode_RedOnly'")).Object);
+	spawnPoint->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	spawnPoint->SetupAttachment(RootComponent);
+	spawnPoint->SetRelativeLocation(FVector(x, 50, zSpawnPointCoordinate));
+	SpawnPoints.Add(spawnPoint);
 }
 
 // Called when the game starts or when spawned
@@ -134,6 +95,8 @@ void ANeck::BeginPlay()
 {
 	Super::BeginPlay();
 }
+
+
 
 // Called every frame
 void ANeck::Tick(float DeltaTime)
@@ -145,23 +108,7 @@ void ANeck::Tick(float DeltaTime)
 AButtonActor* ANeck::SpawnButton(int Num, FName Sound)
 {
 	//set location by spawn point
-	FVector Location = FVector(0, 0, 0);
-	switch (Num)
-	{
-	case(1):
-		Location = SpawnPoint1->GetRelativeLocation();
-		break;
-	case(2):
-		Location = SpawnPoint2->GetRelativeLocation();
-		break;
-	case(3):
-		Location = SpawnPoint3->GetRelativeLocation();
-		break;
-	case(4):
-		Location = SpawnPoint4->GetRelativeLocation();
-		break;
-	}
-
+	FVector Location = SpawnPoints[Num-1]->GetRelativeLocation();
 
 	FRotator Rotator = FRotator(0, 90.f, -90.f);
 	FActorSpawnParameters SpawnParameters;
@@ -185,8 +132,8 @@ AButtonActor* ANeck::SpawnButton(int Num, FName Sound)
 void ANeck::SpawnBackground()
 {
 	//set location by spawn point
-	FVector Location = FVector(0, 10, 0);
-	Location.Z = SpawnPoint1->GetRelativeLocation().Z;
+	FVector Location = FVector(0, 5, 0);
+	Location.Z = SpawnPoints[0]->GetRelativeLocation().Z;
 
 	FRotator Rotator = FRotator(0, 90.f, -90.f);
 	FActorSpawnParameters SpawnParameters;
@@ -199,9 +146,15 @@ void ANeck::SpawnBackground()
 
 	back->SetActorRelativeLocation(Location);
 	back->SetActorRotation(Rotator);
-	back->SetSpeed(defaultButtonSpeed);
+	back->SetSpeed(defaultButtonSpeed);	  
 
-	GetWorld()->GetTimerManager().SetTimer(BackSpawnTimer, this, &ANeck::SpawnBackground, 100 / defaultButtonSpeed / 2);
+	back->SetLength(60 / BeatsPerMinute * defaultButtonSpeed);
+	back->SetAutoDestroyTimer(GetButtonPassDistance() / defaultButtonSpeed * 1.4);
+	UE_LOG(LogTemp, Log, TEXT("Spawn back %f + %f = %f"), GetWorld()->GetTimeSeconds(), 60.f / BeatsPerMinute, 60.f / BeatsPerMinute + GetWorld()->GetTimeSeconds());
+
+
+
+	GetWorld()->GetTimerManager().SetTimer(BackSpawnTimer, this, &ANeck::SpawnBackground, 60.f / BeatsPerMinute) ;
 }
 
 void ANeck::SetSpawnPointsZCoordinate(float z)
@@ -210,21 +163,14 @@ void ANeck::SetSpawnPointsZCoordinate(float z)
 	FVector location;
 
 	//spawn points change location
-	location = SpawnPoint1->GetRelativeLocation();
-	location.Z = zSpawnPointCoordinate;
-	SpawnPoint1->SetRelativeLocation(location);
-
-	location = SpawnPoint2->GetRelativeLocation();
-	location.Z = zSpawnPointCoordinate;
-	SpawnPoint2->SetRelativeLocation(location);
-
-	location = SpawnPoint3->GetRelativeLocation();
-	location.Z = zSpawnPointCoordinate;
-	SpawnPoint3->SetRelativeLocation(location);
-
-	location = SpawnPoint4->GetRelativeLocation();
-	location.Z = zSpawnPointCoordinate;
-	SpawnPoint4->SetRelativeLocation(location);
+	for (int n=0; n < SpawnPoints.Num(); n++)
+	{
+		location = SpawnPoints[n]->GetRelativeLocation();
+		location.Z = zSpawnPointCoordinate;
+		SpawnPoints[n]->SetRelativeLocation(location);
+	}
+	
+	
 }
 
 float ANeck::GetBottomBorderCoordinate()
@@ -249,25 +195,12 @@ float ANeck::GetButtonPassDistance()
 
 void ANeck::PlayString(int Num)
 {
-	switch (Num)
-	{
-	case(1):
-		GuitarString1_1->PlayString();
-		//GuitarString1_2->PlayString();
-		break;
-	case(2):
-		GuitarString2_1->PlayString();
-		//GuitarString2_2->PlayString();
-		break;
-	case(3):
-		GuitarString3_1->PlayString();
-		//GuitarString3_2->PlayString();
-		break;
-	case(4):
-		GuitarString4_1->PlayString();
-		//GuitarString4_2->PlayString();
-		break;
-	}
+	GuitarStrings[Num-1]->PlayString();
+}
+
+void ANeck::SetBPM(int bpm)
+{
+	BeatsPerMinute = bpm;
 }
 
 

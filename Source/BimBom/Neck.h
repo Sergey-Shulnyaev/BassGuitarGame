@@ -40,6 +40,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawn, meta = (AllowPrivateAccess = "true"))
 	float defaultButtonSpeed;
 
+
 	//spawn point with visualizing
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawn, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* SpawnPoint1;
@@ -60,9 +61,22 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
 	class UStringPaperFlipbookComponent* GuitarString4_1;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	TArray<UStaticMeshComponent*> SpawnPoints;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Spawn, meta = (AllowPrivateAccess = "true"))
+	TArray<UStringPaperFlipbookComponent*> GuitarStrings;
+
+	//strings and spawn points creation
+	UFUNCTION(BlueprintCallable, Category = Spawn)
+	void CreateStringAndSpawnPoint(float x);
+
 	//SpawnTimer
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
 	FTimerHandle BackSpawnTimer;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner, meta = (AllowPrivateAccess = "true"))
+	float BeatsPerMinute;
 
 	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Play, meta = (AllowPrivateAccess = "true"))
 	//class UStringPaperFlipbookComponent* GuitarString1_2;
@@ -103,4 +117,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Spawn)
 	void PlayString(int Num);
+
+	UFUNCTION(BlueprintCallable, Category = Spawn)
+	void SetBPM(int bpm);
 };

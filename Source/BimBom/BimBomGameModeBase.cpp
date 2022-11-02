@@ -128,7 +128,7 @@ void ABimBomGameModeBase::BeginPlay()
 		return;
 	}
 
-	
+	GuitarNeck->SetBPM(BeatsPerMinute);
 
 	// set bottom border by getting relative coordinate
 	BottomBorderCoordinate = -GuitarNeck->GetBottomBorderCoordinate();
@@ -143,7 +143,7 @@ void ABimBomGameModeBase::BeginPlay()
 	ButtonDistance = GuitarNeck->GetButtonPassDistance();
 
 	//music start
-	SongDelay = ButtonDistance / DefaultButtonSpeed + 2;
+	SongDelay = ButtonDistance / DefaultButtonSpeed + 1;
 	GetWorld()->GetTimerManager().SetTimer(PlaySongTimer, this, &ABimBomGameModeBase::StartPlayingSong, SongDelay);
 
 	SetSpawnButtonTimer();
@@ -178,7 +178,6 @@ ANeck* ABimBomGameModeBase::GetGuitarNeckFromScene()
 void ABimBomGameModeBase::StartPlayingSong()
 {
 	UGameplayStatics::PlaySound2D(this, MainSong);
-
 }
 
 void ABimBomGameModeBase::Tick(float DeltaTime)
@@ -210,14 +209,16 @@ void ABimBomGameModeBase::CheckLastButtons()
 
 void ABimBomGameModeBase::SetSpawnBackgroundTimer()
 {
-	// get first button to spawn
+	
+	// get parameters of first button
 	FButtonSpawnParameters* buttonSpawnParameters = ButtonSpawnDataTable->FindRow<FButtonSpawnParameters>(
 		ButtonRowNames[0], FString(TEXT("Dialogue Context")), true);
 	// identify time to spawn first
-	float buttonPlayTime = buttonSpawnParameters->Time;
+
 	float currentTime = GetWorld()->GetTimeSeconds();
-	float playTime = buttonPlayTime / BeatsPerMinute * 60 - ButtonDistance / DefaultButtonSpeed;
-	float deltaSpawnTime = playTime - currentTime + SongDelay - 100 / GuitarNeck->GetDefaultButtonSpeed() / 4;
+	UE_LOG(LogTemp, Log, TEXT("Start Spawn back %f"), currentTime);
+	float playTime = - ButtonDistance / DefaultButtonSpeed;
+	float deltaSpawnTime = playTime - currentTime + SongDelay;
 	GetWorld()->GetTimerManager().SetTimer(SpawnBackgroundTimer, this, &ABimBomGameModeBase::SpawnBackground, deltaSpawnTime);
 }
 
