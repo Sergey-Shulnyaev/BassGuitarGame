@@ -113,7 +113,7 @@ void AButtonActor::SetNumber(int Num)
 void AButtonActor::CustomDestroy()
 {
 
-	UE_LOG(LogTemp, Error, TEXT("LOOSER Button with number %d autoDESTROYED"), spriteNumber);
+	UE_LOG(LogTemp, Error, TEXT("Button with number %d autoDESTROYED"), spriteNumber);
 	Destroy();
 }
 

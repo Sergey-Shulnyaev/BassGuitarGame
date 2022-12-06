@@ -13,7 +13,9 @@
 ANeck::ANeck()
 	:
 	zSpawnPointCoordinate(250),
-	defaultButtonSpeed(150)
+	defaultButtonSpeed(150),
+	StringNum(4),
+	NeckWidth(256)
 {
 
 	float zCenter = 1024;
@@ -47,23 +49,17 @@ ANeck::ANeck()
 		(TEXT("PaperSprite'/Game/Sprites/SPR_DestroyLine.SPR_DestroyLine'")).Object);
 	destroyLineSprite->SetRelativeLocation(FVector(0, 10, -20));
 
-	
-	TArray <float> XArray;
-	float width = 128;
-	int num = 4;
-	for (int i = 1; i <= num; i++)
-		XArray.Add(-width / 2 + i * width / (num+1));
-
-	for (auto x : XArray)
-		CreateStringAndSpawnPoint(x);
-	
+	//SpawnStrings
+	for (int i = 1; i <= StringNum; i++)
+		CreateStringAndSpawnPoint();
 
 	SetSpawnPointsZCoordinate(1024);
 
 }
 
-void ANeck::CreateStringAndSpawnPoint(float x)
+void ANeck::CreateStringAndSpawnPoint()
 {	  
+	float x = -NeckWidth / 2 + (GuitarStrings.Num() + 1) * NeckWidth / (StringNum + 1);
 	UStringPaperFlipbookComponent* guitarString;
 	FString guitarStringName = FString("String_");
 	FString numName = FString::FromInt(GuitarStrings.Num() + 1);
@@ -94,6 +90,7 @@ void ANeck::CreateStringAndSpawnPoint(float x)
 void ANeck::BeginPlay()
 {
 	Super::BeginPlay();
+	
 }
 
 
@@ -190,7 +187,7 @@ float ANeck::GetDefaultButtonSpeed()
 
 float ANeck::GetButtonPassDistance()
 {
-	return zSpawnPointCoordinate - GetPlayLineCoordinate();
+	return zSpawnPointCoordinate - GetPlayLineCoordinate()-10;
 }
 
 void ANeck::PlayString(int Num)

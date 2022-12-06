@@ -312,7 +312,7 @@ void ABimBomGameModeBase::DestroyButton(int Num)
 	else
 	{
 		//negative sanctions for player
-		UE_LOG(LogTemp, Warning, TEXT("BIDLO RANO Num %d"), Num);
+		UE_LOG(LogTemp, Warning, TEXT("RANO Num %d"), Num);
 	}
 }
 
